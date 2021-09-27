@@ -1,6 +1,8 @@
 package com.example.gogamestate;
 
-public class GoGameState {
+import android.view.View;
+
+public class GoGameState implements View.OnClickListener{
 
 
     //When true it is Player 1's turn
@@ -22,4 +24,8 @@ public class GoGameState {
 
     }
 
+    @Override
+    public void onClick(View v) {
+
+    }
 }
