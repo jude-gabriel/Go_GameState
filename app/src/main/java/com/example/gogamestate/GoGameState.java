@@ -12,6 +12,13 @@ public class GoGameState {
     //When false it is Player 2's turn
     private boolean userTurn;
 
+    //int array for locations on the board
+    private int[][] gameBoard;
+
+    //Float values for the users click locations
+    private float userXClick;
+    private float userYClick;
+
     public GoGameState(){
 
     }
