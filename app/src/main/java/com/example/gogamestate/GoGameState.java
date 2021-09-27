@@ -10,7 +10,7 @@ public class GoGameState {
 
     //When true it is Player 1's turn
     //When false it is Player 2's turn
-    private boolean userTurn;
+    private boolean isPlayer1;
 
     //int array for locations on the board
     private int[][] gameBoard;
