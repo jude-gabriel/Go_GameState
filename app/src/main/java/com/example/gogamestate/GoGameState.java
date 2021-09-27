@@ -28,4 +28,8 @@ public class GoGameState implements View.OnClickListener{
     public void onClick(View v) {
 
     }
+
+    public boolean isValidLocation() {
+        return true;
+    }
 }
