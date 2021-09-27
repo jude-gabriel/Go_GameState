@@ -12,4 +12,12 @@ public class GoGameState {
     //When false it is Player 2's turn
     private boolean userTurn;
 
+    public GoGameState(){
+
+    }
+
+    public GoGameState(GoGameState gs){
+
+    }
+
 }
