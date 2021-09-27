@@ -3,8 +3,8 @@ package com.example.gogamestate;
 public class GoGameState {
 
     public enum Color{
-        RED,
-        GREEN,
+        BLACK,
+        WHITE,
         NONE
     };
 
