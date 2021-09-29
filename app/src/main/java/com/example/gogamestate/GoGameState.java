@@ -2,7 +2,7 @@ package com.example.gogamestate;
 
 import android.view.View;
 
-public class GoGameState{
+public class GoGameState implements View.OnClickListener{
 
 
     //When true it is Player 1's turn
@@ -25,4 +25,7 @@ public class GoGameState{
     }
 
 
+    public boolean isValidLocation() {
+        return true;
+    }
 }
