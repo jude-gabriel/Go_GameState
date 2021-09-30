@@ -29,10 +29,9 @@ public class Stone {
         xRight = xLocation + radius;
         yTop = yLocation - radius;
         yBottom = yLocation + radius;
-
     }
 
-    public void setStoneColor(Color stoneColor) {
+    public void setStoneColor(StoneColor stoneColor) {
         this.stoneColor = stoneColor;
     }
 
@@ -48,6 +47,22 @@ public class Stone {
     public float getyLocation(){
 
         return yLocation;
+    }
+
+    public float getxLeft(){
+        return xLeft;
+    }
+
+    public float getxRight(){
+        return xRight;
+    }
+
+    public float getyTop(){
+        return yTop;
+    }
+
+    public float getyBottom(){
+        return yBottom;
     }
 
 

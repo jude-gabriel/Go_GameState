@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Button runTest = (Button) findViewById(R.id.runTest);
         runTest.setOnClickListener(main);
+
     }
 
     @Override

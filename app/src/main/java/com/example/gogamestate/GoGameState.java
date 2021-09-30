@@ -1,8 +1,10 @@
 package com.example.gogamestate;
 
+import android.content.Context;
+import android.util.AttributeSet;
 import android.view.View;
 
-public class GoGameState{
+public class GoGameState {
 
 
     //When true it is Player 1's turn
@@ -18,13 +20,15 @@ public class GoGameState{
 
     private int boardSize;
 
-    public GoGameState(){
+    public GoGameState() {
+
         boardSize = 9;
+        gameBoard = new Stone[boardSize][boardSize];
 
-
-        initializeArray();
-
+        gameBoard = initializeArray();
     }
+
+
 
     public GoGameState(GoGameState gs){
 
@@ -36,12 +40,16 @@ public class GoGameState{
      *
      * @author Jude Gabriel
      */
-    public void initializeArray() {
+    public Stone[][] initializeArray() {
+        Stone[][] tempBoard = new Stone[boardSize][boardSize];
+
         for(int i = 0; i < 9; i++){
             for(int j = 0; j < 9; j++){
-                gameBoard[i][j] = new Stone((i * 50), (i * 50));
+                tempBoard[i][j] = new Stone((j * 350) + 250,(i * 350) + 20);
             }
         }
+
+        return tempBoard;
     }
 
 
@@ -83,7 +91,12 @@ public class GoGameState{
         //Since the radius of the stone is 25 we wanna check double the surroundings
         for(int i = 0; i < boardSize; i++){
             for(int j = 0; j < boardSize; j++){
-                if((x < gameBoard[i][j].getxLocation())
+                if((x < gameBoard[i][j].getxRight()) && (x > gameBoard[i][j].getxLeft())){
+                    if((y > gameBoard[i][j].getyTop()) && (y < gameBoard[i][j].getyBottom())){
+                        iIndex = i;
+                        jIndex = j;
+                    }
+                }
             }
         }
 
