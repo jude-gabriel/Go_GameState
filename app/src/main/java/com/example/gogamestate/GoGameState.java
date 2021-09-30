@@ -10,7 +10,7 @@ public class GoGameState{
     private boolean isPlayer1;
 
     //Stones array for locations on the board
-    private Stones[][] gameBoard;
+    private Stone[][] gameBoard;
 
     //Float values for the users click locations
     private float userXClick;
