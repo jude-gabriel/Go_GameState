@@ -2,6 +2,7 @@ package com.example.gogamestate;
 
 public class Stone {
 
+    //Each possible stone color held in enum
     public enum StoneColor{
         WHITE,
         BLACK,
@@ -24,6 +25,9 @@ public class Stone {
     public Stone(float x, float y){
         stoneColor = StoneColor.NONE;
         radius = 25;
+
+        xLocation = x;
+        yLocation = y;
 
         xLeft = xLocation - radius;
         xRight = xLocation + radius;

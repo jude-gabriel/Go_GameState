@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * runs tests based on what time the Run Test button was pressed
      *
-     * @param View view
+     * @param  view
      * @return void
      *
      * @author Mia Anderson
