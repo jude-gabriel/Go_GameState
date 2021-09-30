@@ -2,7 +2,14 @@ package com.example.gogamestate;
 
 public class Stone {
 
-    private Color stoneColor;
+    public enum StoneColor{
+        WHITE,
+        BLACK,
+        NONE
+    };
+
+
+    private StoneColor stoneColor;
     private float xLocation;  //Create private variables for the x
     private float yLocation;  //and y locations of the of the stones
     private int radius;   //Create a private int for the radius of stones
@@ -15,7 +22,7 @@ public class Stone {
     //constructor for Stone
     //@author Natalie Tashchuk
     public Stone(float x, float y){
-        stoneColor = Color.NONE;
+        stoneColor = StoneColor.NONE;
         radius = 25;
 
         xLeft = xLocation - radius;
@@ -29,7 +36,7 @@ public class Stone {
         this.stoneColor = stoneColor;
     }
 
-    public Color getStoneColor(){
+    public StoneColor getStoneColor(){
         return stoneColor;
     }
 
@@ -43,11 +50,8 @@ public class Stone {
         return yLocation;
     }
 
-    public enum Color{
-        WHITE,
-        BLACK,
-        NONE
-    };
+
+
 
 
 

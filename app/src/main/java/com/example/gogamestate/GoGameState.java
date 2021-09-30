@@ -39,12 +39,20 @@ public class GoGameState{
     public void initializeArray() {
         for(int i = 0; i < 9; i++){
             for(int j = 0; j < 9; j++){
-                gameBoard[i][j] = new Stones();
+                gameBoard[i][j] = new Stone((i * 50), (i * 50));
             }
         }
     }
 
 
+    /**
+     * Calculate the player move and then rechange the color of the stones
+     *
+     * @param x     x location of the user or AI click
+     * @param y     y location of the user or AI click
+     *
+     * @author Jude Gabriel
+     */
     public void playerMove(float x, float y) {
 
 
@@ -60,9 +68,12 @@ public class GoGameState{
     /**
      * findStone finds which index the user clicked on in the stones array
      *
-     * @param x
-     * @param y
-     * @return
+     * @param x     the x location of the user click
+     * @param y     the y location of the user click
+     *
+     * @return an integer array containing the indices
+     *
+     * @author Jude Gabriel
      */
     public int[] findStone(float x, float y){
         //Initialize index values as -1 so we can error check
@@ -72,7 +83,7 @@ public class GoGameState{
         //Since the radius of the stone is 25 we wanna check double the surroundings
         for(int i = 0; i < boardSize; i++){
             for(int j = 0; j < boardSize; j++){
-                if()
+                if((x < gameBoard[i][j].getxLocation())
             }
         }
 
@@ -88,6 +99,13 @@ public class GoGameState{
     }
 
 
+    /**
+     * This will check if the user places the stone in a valid position
+     *
+     * @return true if the user places a stone in a valid location
+     *
+     * @author Jude Gabriel
+     */
     public boolean isValidLocation() {
         return true;
     }
