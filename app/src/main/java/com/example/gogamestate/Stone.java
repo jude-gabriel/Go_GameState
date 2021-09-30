@@ -9,6 +9,12 @@ public class Stone {
         NONE
     };
 
+    //Enum for if the stone has been checked in capture
+    public enum CheckedStone{
+        FALSE,
+        TRUE
+    };
+
 
     private StoneColor stoneColor;
     private float xLocation;  //Create private variables for the x
@@ -18,6 +24,7 @@ public class Stone {
     private float xRight;  //stores the x value of the rightmost part of the stone
     private float yTop;  //stores the y value of the topmost part of the stone
     private float yBottom;  //stores the y value of bottommost part of the stone
+    private CheckedStone checkedStone;
 
 
     //constructor for Stone
@@ -33,6 +40,8 @@ public class Stone {
         xRight = xLocation + radius;
         yTop = yLocation - radius;
         yBottom = yLocation + radius;
+
+        checkedStone = CheckedStone.FALSE;
     }
 
     public void setStoneColor(StoneColor stoneColor) {
@@ -69,6 +78,14 @@ public class Stone {
         return yBottom;
     }
 
+
+    public CheckedStone getCheckedStone(){
+        return checkedStone;
+    }
+
+    public void setCheckedStone(CheckedStone checkVal){
+        checkedStone = checkVal;
+    }
 
 
 
