@@ -26,6 +26,9 @@ public class GoGameState {
     //Check how many moves have been made so far in the game
     private int totalMoves;
 
+    Stone[][] stoneCopiesFirst;
+    Stone[][] stoneCopiesSecond;
+
     public GoGameState() {
 
         //Initialize the board size and gameBoard array
@@ -45,6 +48,9 @@ public class GoGameState {
         player2Score = 0;
 
         totalMoves = 0;
+
+        stoneCopiesFirst = new Stone[boardSize][boardSize];
+        stoneCopiesSecond = new Stone[boardSize][boardSize];
     }
 
 
@@ -106,6 +112,22 @@ public class GoGameState {
         int iIndex = indexVals[0];
         int jIndex = indexVals[1];
 
+        if(totalMoves == 2){
+            for(int i = 0; i < boardSize; i++){
+                for(int j = 0; j < boardSize; j++){
+                    stoneCopiesFirst[i][j] = gameBoard[i][j];
+                }
+            }
+        }
+        if (totalMoves == 3){
+            for(int i = 0; i < boardSize; i++){
+                for(int j = 0; j < boardSize; j++) {
+                    stoneCopiesSecond[i][j] = gameBoard[i][j];
+                }
+            }
+        }
+
+
         //Check if the move is valid
         boolean validMove = isValidLocation(iIndex, jIndex);
 
@@ -117,6 +139,7 @@ public class GoGameState {
                     commenceCapture();
                     //Change the players turn to the next player
                     isPlayer1 = !isPlayer1;
+                    totalMoves++;
                     return true;
                 }
                 else{
@@ -140,6 +163,7 @@ public class GoGameState {
                     commenceCapture();
                     //Change the players turn to the next player
                     isPlayer1 = !isPlayer1;
+                    totalMoves++;
                     return true;
                 }
                 else{
@@ -216,6 +240,7 @@ public class GoGameState {
      */
     public boolean isValidLocation(int iIndex, int jIndex) {
         boolean canCapture;
+
         //Check if the user clicked on a liberty
         if(iIndex == -1 || jIndex == -1){
             return false;
@@ -244,13 +269,9 @@ public class GoGameState {
         }
 
 
-        //Check if it is a repeated board position
-            //Needs at least two user moves
-            //Store the array after the first two moves
-            //Compare it to the most recent array
-            //check if they are the same
-            //if not update the arrays back by one
-            //if so return false
+        if(checkRepeatedPosition(iIndex, jIndex) == true){
+            return false;
+        }
 
         //If all above cases do not return false then it is a valid move
         return true;
@@ -297,7 +318,7 @@ public class GoGameState {
 
 
         //Case 2: The stones are in the top right corner
-        else if((i == gameBoard.length -1) && (j == 0)) {
+        else if((i == 0) && (j == gameBoard.length - 1)) {
             if (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.NONE) {
                 return true;
             } else {
@@ -320,7 +341,7 @@ public class GoGameState {
 
 
         //Case 3: The stones are in the bottom left corner
-        else if((i == 0) && (j == gameBoard.length - 1)) {
+        else if((i == gameBoard.length - 1) && (j == 0)) {
             if (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.NONE) {
                 return true;
             } else {
@@ -580,7 +601,7 @@ public class GoGameState {
 
 
         //Case 2: The stones are in the top right corner
-        else if((i == gameBoard.length -1) && (j == 0)) {
+        else if((i == 0) && (j == gameBoard.length - 1)) {
             if (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.NONE) {
                 return true;
             } else {
@@ -603,7 +624,7 @@ public class GoGameState {
 
 
         //Case 3: The stones are in the bottom left corner
-        else if((i == 0) && (j == gameBoard.length - 1)) {
+        else if((i == gameBoard.length - 1) && (j == 0)) {
             if (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.NONE) {
                 return true;
             } else {
@@ -842,6 +863,10 @@ public class GoGameState {
 
     /**
      * If ccaptures are not possible, reset checked stone values
+     *
+     * @author Jude Gabriel
+     *
+     * NOTE: Requires testing
      */
     public void resetCapture(){
         for(int i = 0; i < boardSize; i++){
@@ -859,9 +884,51 @@ public class GoGameState {
      * @return
      *
      * @author Jude Gabriel
+     *
+     * NOTE: Might be fnished.... needs testing
      */
-    public boolean checkRepeatedPosition(int i, int j){
-        return false;
+    public boolean checkRepeatedPosition(int x, int y){
+        //set a truth counter to zero
+        int count = 0;
+
+        //Place the new chip on the board for the given player
+        if(isPlayer1){
+            gameBoard[x][y].setStoneColor(Stone.StoneColor.BLACK);
+        }
+        else{
+            gameBoard[x][y].setStoneColor(Stone.StoneColor.WHITE);
+        }
+
+        //Check if the boards are equal
+        for(int i = 0; i < boardSize; i++){
+            for(int j = 0; j < boardSize; j++){
+                if(gameBoard[i][j] != stoneCopiesFirst[i][j]){
+                    count++;
+                }
+            }
+        }
+
+        //If they are equal reset the board and return false
+        if(count == 0){
+            gameBoard[x][y].setStoneColor(Stone.StoneColor.NONE);
+            return true;
+        }
+
+        //If they are not equal update the arrays
+        else{
+            for(int i = 0; i < boardSize; i++){
+                for(int j = 0; j < boardSize; j++) {
+                    stoneCopiesFirst[i][j] = stoneCopiesSecond[i][j];
+                }
+            }
+            for(int i = 0; i < boardSize; i++){
+                for(int j = 0; j < boardSize; j++) {
+                    stoneCopiesSecond[i][j] = gameBoard[i][j];
+                }
+            }
+            gameBoard[x][y].setStoneColor(Stone.StoneColor.NONE);
+            return false;
+        }
     }
 
 
@@ -886,6 +953,8 @@ public class GoGameState {
      * @return true if player 1 forfeits and false if player 2 does
      *
      * @author Jude Gabriel
+     *
+     * NOTE: Requires testing
      */
     public boolean forfeit(){
         if(isPlayer1){
