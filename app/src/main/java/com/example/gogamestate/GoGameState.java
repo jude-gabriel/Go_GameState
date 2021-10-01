@@ -879,8 +879,8 @@ public class GoGameState {
 
     /**
      * Checks if the user recreated a previous position on the board
-     * @param i
-     * @param j
+     * @param x
+     * @param y
      * @return
      *
      * @author Jude Gabriel
