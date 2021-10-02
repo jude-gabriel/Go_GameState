@@ -5,32 +5,24 @@ package com.example.gogamestate;
 public class GoGameState {
 
 
-    //When true it is Player 1's turn
-    //When false it is Player 2's turn
-    private boolean isPlayer1;
+    /* GoGameState private instance variables */
+    private boolean isPlayer1;  //boolean value for which player's turn it is
+    private Stone[][] gameBoard;    //Stones array for locations on the board
+    private float userXClick;   //The x coordinate the user clicks
+    private float userYClick;   //The y coordinate the user clicks
+    private int boardSize;  //The dimensions of the board
+    private int player1Score;   //Stores Player 1's score
+    private int player2Score;   //Stores Player 2's score
+    private int totalMoves;     //Total number of moves made in game
+    private Stone[][] stoneCopiesFirst; //Stores the board from two moves ago
+    private Stone[][] stoneCopiesSecond;    //Stores the board from one move ago
+    private boolean hasEmptyNeighbor;   //Boolean value for if a stone has an empty neighbor
 
-    //Stones array for locations on the board
-    private Stone[][] gameBoard;
 
-    //Float values for the users click locations
-    private float userXClick;
-    private float userYClick;
-
-    //Create the board size
-    private int boardSize;
-
-    //Create the players scores
-    private int player1Score;
-    private int player2Score;
-
-    //Check how many moves have been made so far in the game
-    private int totalMoves;
-
-    Stone[][] stoneCopiesFirst;
-    Stone[][] stoneCopiesSecond;
-
+    /**
+     * Constructor for the GoGameStateClass
+     */
     public GoGameState() {
-
         //Initialize the board size and gameBoard array
         boardSize = 9;
         gameBoard = new Stone[boardSize][boardSize];
@@ -43,14 +35,18 @@ public class GoGameState {
         userXClick = -1;
         userXClick = -1;
 
-        //Initialize the players scores
+        //Initialize the players scores and total number of moves
         player1Score = 0;
         player2Score = 0;
-
         totalMoves = 0;
 
+        //Initialize the arrays that store former board positions
         stoneCopiesFirst = new Stone[boardSize][boardSize];
         stoneCopiesSecond = new Stone[boardSize][boardSize];
+
+        //Set hasEmptyNeighbor to false, used to check for captures
+        hasEmptyNeighbor = false;
+
     }
 
 
@@ -70,6 +66,7 @@ public class GoGameState {
         this.player2Score = gs.player2Score;
         this.isPlayer1 = gs.isPlayer1;
         this.totalMoves = gs.totalMoves;
+
     }
 
 
@@ -102,6 +99,7 @@ public class GoGameState {
      * @param x     x location of the user or AI click
      * @param y     y location of the user or AI click
      * @return true if it is a valid player move, false otherwise
+     *
      * @author Jude Gabriel
      *
      * NOT FINISHED
@@ -111,6 +109,15 @@ public class GoGameState {
         int[] indexVals = findStone(x, y);
         int iIndex = indexVals[0];
         int jIndex = indexVals[1];
+
+        boolean checkCap1 = true;
+        boolean checkCap2 = true;
+        boolean checkCap3 = true;
+        boolean checkCap4 = true;
+        boolean checkCap5 = true;
+        boolean checkCap6 = true;
+        boolean checkCap7 = true;
+        boolean checkCap8 = true;
 
         if(totalMoves == 2){
             for(int i = 0; i < boardSize; i++){
@@ -132,18 +139,87 @@ public class GoGameState {
         boolean validMove = isValidLocation(iIndex, jIndex);
 
 
-        if(isPlayer1){
-            if(validMove) {
+        if(isPlayer1) {
+            if (validMove) {
                 gameBoard[iIndex][jIndex].setStoneColor(Stone.StoneColor.BLACK);
-                if(checkCaptureBlack(iIndex, jIndex) == false){
-                    commenceCapture();
-                    //Change the players turn to the next player
-                    isPlayer1 = !isPlayer1;
-                    totalMoves++;
-                    return true;
+
+                if (iIndex > 0) {
+                    if (gameBoard[iIndex - 1][jIndex].getStoneColor() ==
+                            Stone.StoneColor.WHITE) {
+                        checkCap1 = checkCaptureWhite(iIndex - 1, jIndex);
+                    }
+                }
+                if (iIndex < gameBoard.length - 1) {
+                    if (gameBoard[iIndex + 1][jIndex].getStoneColor() ==
+                            Stone.StoneColor.WHITE) {
+                        checkCap2 = checkCaptureWhite(iIndex + 1, jIndex);
+                    }
+                }
+                if (jIndex > 0) {
+                    if (gameBoard[iIndex][jIndex - 1].getStoneColor() ==
+                            Stone.StoneColor.WHITE) {
+                        checkCap3 = checkCaptureWhite(iIndex, jIndex - 1);
+                    }
+                }
+                if (jIndex < gameBoard.length - 1) {
+                    if (gameBoard[iIndex][jIndex + 1].getStoneColor() ==
+                            Stone.StoneColor.WHITE) {
+                        checkCap4 = checkCaptureWhite(iIndex, jIndex);
+                    }
+                }
+                if((iIndex > 0) && (jIndex > 0)){
+                    if(gameBoard[iIndex - 1][jIndex - 1].getStoneColor() ==
+                            Stone.StoneColor.WHITE){
+                        checkCap5 = checkCaptureWhite(iIndex - 1, jIndex - 1);
+                    }
+                }
+                if((iIndex < gameBoard.length - 1) && (jIndex < gameBoard.length - 1)){
+                    if(gameBoard[iIndex + 1][jIndex + 1].getStoneColor() ==
+                            Stone.StoneColor.WHITE){
+                        checkCap6 = checkCaptureWhite(iIndex + 1, jIndex + 1);
+                    }
+                }
+                if((iIndex < gameBoard.length - 1) && (jIndex > 0)){
+                    if(gameBoard[iIndex + 1][jIndex - 1].getStoneColor() ==
+                            Stone.StoneColor.WHITE){
+                        checkCap7 = checkCaptureWhite(iIndex + 1, jIndex - 1);
+                    }
+                }
+                if((iIndex > 0) && (jIndex < gameBoard.length - 1)){
+                    if(gameBoard[iIndex - 1][jIndex + 1].getStoneColor() ==
+                            Stone.StoneColor.WHITE){
+                        checkCap8 = checkCaptureWhite(iIndex - 1, jIndex + 1);
+                    }
+                }
+
+                if((checkCap1 == false) || (checkCap2 == false) || (checkCap3 == false) ||
+                        (checkCap4 == false) || (checkCap5 == false) ||
+                        (checkCap6 == false) || (checkCap7 == false) || (checkCap8 == false)) {
+                    if(hasEmptyNeighbor == false){
+                        commenceCapture();
+                        player1Score = 0;
+                        calculateBlackScore();
+                        //Change the players turn to the next player
+                        isPlayer1 = !isPlayer1;
+                        totalMoves++;
+                        hasEmptyNeighbor = false;
+                        return true;
+                    }
+                    else{
+                        resetCapture();
+                        player1Score = 0;
+                        calculateBlackScore();
+                        hasEmptyNeighbor = false;
+                        //Change the players turn to the next player
+                        isPlayer1 = !isPlayer1;
+                        return false;
+                    }
                 }
                 else{
                     resetCapture();
+                    player1Score = 0;
+                    calculateBlackScore();
+                    hasEmptyNeighbor = false;
                     //Change the players turn to the next player
                     isPlayer1 = !isPlayer1;
                     return false;
@@ -152,22 +228,85 @@ public class GoGameState {
             else{
                 //Change the players turn to the next player
                 isPlayer1 = !isPlayer1;
+                hasEmptyNeighbor = false;
                 return false;
             }
         }
 
+
         else if(!isPlayer1){
             if(validMove){
                 gameBoard[iIndex][jIndex].setStoneColor(Stone.StoneColor.WHITE);
-                if(checkCaptureBlack(iIndex, jIndex) == false){
-                    commenceCapture();
-                    //Change the players turn to the next player
-                    isPlayer1 = !isPlayer1;
-                    totalMoves++;
-                    return true;
+                if (iIndex > 0) {
+                    if (gameBoard[iIndex - 1][jIndex].getStoneColor() ==
+                            Stone.StoneColor.BLACK) {
+                        checkCap1 = checkCaptureBlack(iIndex - 1, jIndex);
+                    }
+                }
+                if (iIndex < gameBoard.length - 1) {
+                    if (gameBoard[iIndex + 1][jIndex].getStoneColor() ==
+                            Stone.StoneColor.BLACK) {
+                        checkCap2 = checkCaptureBlack(iIndex + 1, jIndex);
+                    }
+                }
+                if (jIndex > 0) {
+                    if (gameBoard[iIndex][jIndex - 1].getStoneColor() ==
+                            Stone.StoneColor.BLACK) {
+                        checkCap3 = checkCaptureBlack(iIndex, jIndex - 1);
+                    }
+                }
+                if (jIndex < gameBoard.length - 1) {
+                    if (gameBoard[iIndex][jIndex + 1].getStoneColor() ==
+                            Stone.StoneColor.BLACK) {
+                        checkCap4 = checkCaptureBlack(iIndex, jIndex);
+                    }
+                }
+                if((iIndex > 0) && (jIndex > 0)){
+                    if(gameBoard[iIndex - 1][jIndex - 1].getStoneColor() ==
+                            Stone.StoneColor.BLACK){
+                        checkCap5 = checkCaptureBlack(iIndex - 1, jIndex - 1);
+                    }
+                }
+                if((iIndex < gameBoard.length - 1) && (jIndex < gameBoard.length - 1)){
+                    if(gameBoard[iIndex + 1][jIndex + 1].getStoneColor() ==
+                            Stone.StoneColor.BLACK){
+                        checkCap6 = checkCaptureBlack(iIndex + 1, jIndex + 1);
+                    }
+                }
+                if((iIndex < gameBoard.length - 1) && (jIndex > 0)){
+                    if(gameBoard[iIndex + 1][jIndex - 1].getStoneColor() ==
+                            Stone.StoneColor.BLACK){
+                        checkCap7 = checkCaptureBlack(iIndex + 1, jIndex - 1);
+                    }
+                }
+                if((iIndex > 0) && (jIndex < gameBoard.length - 1)){
+                    if(gameBoard[iIndex - 1][jIndex + 1].getStoneColor() ==
+                            Stone.StoneColor.BLACK){
+                        checkCap8 = checkCaptureBlack(iIndex - 1, jIndex + 1);
+                    }
+                }
+
+                if((checkCap1 == false) || (checkCap2 == false) || (checkCap3 == false) ||
+                        (checkCap4 == false) || (checkCap5 == false) ||
+                        (checkCap6 == false) || (checkCap7 == false) || (checkCap8 == false)){
+                    if(hasEmptyNeighbor == false) {
+                        commenceCapture();
+                        //Change the players turn to the next player
+                        isPlayer1 = !isPlayer1;
+                        totalMoves++;
+                        hasEmptyNeighbor = false;
+                        return true;
+                    }
+                    else{
+                        resetCapture();
+                        hasEmptyNeighbor = false;
+                        isPlayer1 = !isPlayer1;
+                        return false;
+                    }
                 }
                 else{
                     resetCapture();
+                    hasEmptyNeighbor = false;
                     //Change the players turn to the next player
                     isPlayer1 = !isPlayer1;
                     return false;
@@ -175,6 +314,7 @@ public class GoGameState {
             }
             else{
                 //Change the players turn to the next player
+                hasEmptyNeighbor = false;
                 isPlayer1 = !isPlayer1;
                 return false;
             }
@@ -187,6 +327,7 @@ public class GoGameState {
             return false;
         }
     }
+
 
 
     /**
@@ -254,8 +395,10 @@ public class GoGameState {
         //Check if the stone will capture itself
         if(isPlayer1) {
             gameBoard[iIndex][jIndex].setStoneColor(Stone.StoneColor.BLACK);
-            if (checkCaptureBlack(iIndex, jIndex) == false) {
+            if(checkCaptureBlack(iIndex, jIndex) == false){
                 gameBoard[iIndex][jIndex].setStoneColor(Stone.StoneColor.NONE);
+                resetCapture();
+                hasEmptyNeighbor = false;
                 return false;
             }
         }
@@ -264,6 +407,8 @@ public class GoGameState {
             gameBoard[iIndex][jIndex].setStoneColor(Stone.StoneColor.WHITE);
             if(checkCaptureWhite(iIndex, jIndex) == false){
                 gameBoard[iIndex][jIndex].setStoneColor(Stone.StoneColor.NONE);
+                resetCapture();
+                hasEmptyNeighbor = false;
                 return false;
             }
         }
@@ -274,6 +419,8 @@ public class GoGameState {
         }
 
         //If all above cases do not return false then it is a valid move
+        hasEmptyNeighbor = false;
+        resetCapture();
         return true;
     }
 
@@ -298,6 +445,7 @@ public class GoGameState {
         //Case 1: The stones are in the top left corner
         if((i == 0) && (j == 0)) {
             if (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i + 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -307,6 +455,7 @@ public class GoGameState {
             }
 
             if (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i][j + 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -320,6 +469,7 @@ public class GoGameState {
         //Case 2: The stones are in the top right corner
         else if((i == 0) && (j == gameBoard.length - 1)) {
             if (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i + 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -329,6 +479,7 @@ public class GoGameState {
             }
 
             if (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i][j - 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -343,6 +494,7 @@ public class GoGameState {
         //Case 3: The stones are in the bottom left corner
         else if((i == gameBoard.length - 1) && (j == 0)) {
             if (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i - 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -352,6 +504,7 @@ public class GoGameState {
             }
 
             if (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i][j + 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -366,6 +519,7 @@ public class GoGameState {
         //Case 4: The stones are in the bottom right corner
         else if((i == gameBoard.length - 1) && (j == gameBoard.length - 1)) {
             if (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i - 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -375,6 +529,7 @@ public class GoGameState {
             }
 
             if (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i][j - 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -389,6 +544,7 @@ public class GoGameState {
         //Case 5: The stones are on the left hand side
         else if((i != gameBoard.length - 1) && (i != 0 ) && (j == 0)) {
             if (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i + 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -398,6 +554,7 @@ public class GoGameState {
             }
 
             if (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i][j + 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -407,6 +564,7 @@ public class GoGameState {
             }
 
             if (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i - 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -420,6 +578,7 @@ public class GoGameState {
         //Case 6: The stones are on the top row
         else if((i == 0) && (j != 0) && (j != gameBoard.length - 1)) {
             if (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i][j + 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -429,6 +588,7 @@ public class GoGameState {
             }
 
             if (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i][j - 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -438,6 +598,7 @@ public class GoGameState {
             }
 
             if (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i + 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -452,6 +613,7 @@ public class GoGameState {
         //Case 7: The stones are on the bottom row
         else if((i == gameBoard.length - 1) && (j != 0) && (j != gameBoard.length - 1)) {
             if (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i][j + 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -461,6 +623,7 @@ public class GoGameState {
             }
 
             if (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i][j - 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -470,6 +633,7 @@ public class GoGameState {
             }
 
             if (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i - 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -484,6 +648,7 @@ public class GoGameState {
         //Case 8: The stones are on the right hand side
         else if((i != 0) && (i != gameBoard.length - 1) && (j == gameBoard.length - 1)) {
             if (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i + 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -493,6 +658,7 @@ public class GoGameState {
             }
 
             if (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i][j - 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -502,6 +668,7 @@ public class GoGameState {
             }
 
             if (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i - 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -516,6 +683,7 @@ public class GoGameState {
         //Case 9: The stones have all four neighbors
         else {
             if (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i + 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -525,6 +693,7 @@ public class GoGameState {
             }
 
             if (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i][j - 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -534,6 +703,7 @@ public class GoGameState {
             }
 
             if (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i - 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -543,6 +713,7 @@ public class GoGameState {
             }
 
             if (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i][j + 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -580,6 +751,7 @@ public class GoGameState {
         //Case 1: The stones are in the top left corner
         if((i == 0) && (j == 0)) {
             if (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i + 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -589,6 +761,7 @@ public class GoGameState {
             }
 
             if (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i][j + 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -603,6 +776,7 @@ public class GoGameState {
         //Case 2: The stones are in the top right corner
         else if((i == 0) && (j == gameBoard.length - 1)) {
             if (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i + 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -612,6 +786,7 @@ public class GoGameState {
             }
 
             if (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i][j - 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -626,6 +801,7 @@ public class GoGameState {
         //Case 3: The stones are in the bottom left corner
         else if((i == gameBoard.length - 1) && (j == 0)) {
             if (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i - 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -635,6 +811,7 @@ public class GoGameState {
             }
 
             if (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i][j + 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -649,6 +826,7 @@ public class GoGameState {
         //Case 4: The stones are in the bottom right corner
         else if((i == gameBoard.length - 1) && (j == gameBoard.length - 1)) {
             if (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i - 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -658,6 +836,7 @@ public class GoGameState {
             }
 
             if (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i][j - 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -672,6 +851,7 @@ public class GoGameState {
         //Case 5: The stones are on the left hand side
         else if((i != gameBoard.length - 1) && (i != 0 ) && (j == 0)) {
             if (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i + 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -681,6 +861,7 @@ public class GoGameState {
             }
 
             if (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i][j + 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -690,6 +871,7 @@ public class GoGameState {
             }
 
             if (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i - 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -703,6 +885,7 @@ public class GoGameState {
         //Case 6: The stones are on the top row
         else if((i == 0) && (j != 0) && (j != gameBoard.length - 1)) {
             if (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i][j + 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -712,6 +895,7 @@ public class GoGameState {
             }
 
             if (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i][j - 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -721,6 +905,7 @@ public class GoGameState {
             }
 
             if (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i + 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -735,6 +920,7 @@ public class GoGameState {
         //Case 7: The stones are on the bottom row
         else if((i == gameBoard.length - 1) && (j != 0) && (j != gameBoard.length - 1)) {
             if (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i][j + 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -744,6 +930,7 @@ public class GoGameState {
             }
 
             if (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i][j - 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -753,6 +940,7 @@ public class GoGameState {
             }
 
             if (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i - 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -767,6 +955,7 @@ public class GoGameState {
         //Case 8: The stones are on the right hand side
         else if((i != 0) && (i != gameBoard.length - 1) && (j == gameBoard.length - 1)) {
             if (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i + 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -776,6 +965,7 @@ public class GoGameState {
             }
 
             if (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i][j - 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -785,6 +975,7 @@ public class GoGameState {
             }
 
             if (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i - 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -799,6 +990,7 @@ public class GoGameState {
         //Case 9: The stones have all four neighbors
         else {
             if (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i + 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -808,6 +1000,7 @@ public class GoGameState {
             }
 
             if (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i][j - 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -817,6 +1010,7 @@ public class GoGameState {
             }
 
             if (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i - 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -826,6 +1020,7 @@ public class GoGameState {
             }
 
             if (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.NONE) {
+                hasEmptyNeighbor = true;
                 return true;
             } else {
                 if ((gameBoard[i][j + 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
@@ -834,8 +1029,6 @@ public class GoGameState {
                 }
             }
         }
-
-
 
         //Recursion has ended
         return false;
@@ -862,7 +1055,7 @@ public class GoGameState {
 
 
     /**
-     * If ccaptures are not possible, reset checked stone values
+     * If captures are not possible, reset checked stone values
      *
      * @author Jude Gabriel
      *
@@ -881,7 +1074,7 @@ public class GoGameState {
      * Checks if the user recreated a previous position on the board
      * @param x
      * @param y
-     * @return
+     * @return true if the board position is repeated
      *
      * @author Jude Gabriel
      *
@@ -908,7 +1101,7 @@ public class GoGameState {
             }
         }
 
-        //If they are equal reset the board and return false
+        //If they are equal reset the board and return true
         if(count == 0){
             gameBoard[x][y].setStoneColor(Stone.StoneColor.NONE);
             return true;
@@ -964,4 +1157,259 @@ public class GoGameState {
             return false;
         }
     }
+
+
+    /**
+     * Allows the user to end the game and play the dumb AI
+     *
+     * @return true when the player selects to play the dumb AI on
+     *      their turn
+     *
+     * @author Jude Gabriel
+     *
+     * NOTE: Requires testing
+     */
+    public boolean playDumbAI(){
+        if(isPlayer1){
+            forfeit();
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+
+    /**
+     * Allows the user to end the game and play the smart AI
+     *
+     * @return true when the player selects to play the smart AI on
+     *          their turn
+     *
+     * @author Jude Gabriel
+     *
+     * NOTE: Requires testing
+     */
+    public boolean playSmartAI(){
+        if(isPlayer1){
+            forfeit();
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+
+    /**
+     * Allows the user to end the current game and play a 2-player game
+     *
+     * @return true when the player selects to play a 2-player game on their turn
+     *
+     * @author Jude Gabriel
+     *
+     * NOTE: Requires testing
+     */
+    public boolean play2Player(){
+        if(isPlayer1){
+            forfeit();
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+
+    /**
+     * Allows user to exit the application on their turn
+     *
+     * @return true when the player selects to quit the game on their turn
+     *
+     * @author Jude Gabriel
+     *
+     * NOTE: Requires testing
+     */
+    public boolean quitGame(){
+        if(isPlayer1){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+
+    /**
+     * Allows the user to start a network game on their turn
+     *
+     * @return true when the player selects to play a network game on their turn
+     *
+     * @author Jude Gabriel
+     *
+     * NOTE: Requires testing
+     */
+    public boolean networkPlay(){
+        if(isPlayer1){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+
+    @Override
+    public String toString(){
+        String firstPlayerScore = "Player 1 Score: " + player1Score;
+        String secondPlayerScore = "Player 2 Score: " + player2Score;
+
+        //Make timer for elapsed time string
+
+        String theBoard = "";
+        for(int i = 0; i < boardSize; i++){
+            for(int j = 0; j < boardSize; j++){
+                theBoard +=("    " + i + ", " + j + " is " + gameBoard[i][j].getStoneColor());
+            }
+        }
+
+        String info = firstPlayerScore + " " + secondPlayerScore + " " + theBoard;
+
+        return info;
+    }
+
+
+
+
+
+
+
+    public void calculateBlackScore(){
+        for(int i = 0; i < boardSize; i++){
+            for(int j = 0; j < boardSize; j++){
+                if(gameBoard[i][j].getStoneColor() == Stone.StoneColor.BLACK){
+                    player1Score++;
+                }
+                if(gameBoard[i][j].getStoneColor() == Stone.StoneColor.NONE){
+                    if(calculateBlackSurround(i, j)){
+                        player1Score++;
+                    }
+                }
+            }
+        }
+    }
+
+
+    public boolean calculateBlackSurround(int i, int j){
+        int x = i;
+        int y = j;
+        int count = 0;
+
+        while(x >= 0) {
+            if (gameBoard[x][y].getStoneColor() == Stone.StoneColor.BLACK) {
+                count++;
+                break;
+            }
+            x--;
+        }
+
+        x = i;
+        while(x <= gameBoard.length - 1){
+            if (gameBoard[x][y].getStoneColor() == Stone.StoneColor.BLACK) {
+                count++;
+                break;
+            }
+            x++;
+        }
+
+        x = i;
+        while(y >= 0) {
+            if (gameBoard[x][y].getStoneColor() == Stone.StoneColor.BLACK) {
+                count++;
+                break;
+            }
+            y--;
+        }
+
+        y = j;
+        while(y <= gameBoard.length - 1){
+            if (gameBoard[x][y].getStoneColor() == Stone.StoneColor.BLACK) {
+                count++;
+                break;
+            }
+            y++;
+        }
+
+        if(count == 4){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /** HELPER METHODS FOR TESTING **/
+
+
+    /**
+     * Used to test if captures work
+     *
+     * Remove later
+     *
+     * @author Jude Gabriel
+     */
+    public void testCaptures(){
+        gameBoard[0][0].setStoneColor(Stone.StoneColor.BLACK);
+        gameBoard[0][1].setStoneColor(Stone.StoneColor.BLACK);
+        gameBoard[0][2].setStoneColor(Stone.StoneColor.BLACK);
+
+        gameBoard[1][0].setStoneColor(Stone.StoneColor.BLACK);
+        gameBoard[1][3].setStoneColor(Stone.StoneColor.BLACK);
+
+        gameBoard[2][0].setStoneColor(Stone.StoneColor.BLACK);
+        gameBoard[2][4].setStoneColor(Stone.StoneColor.BLACK);
+
+        gameBoard[3][0].setStoneColor(Stone.StoneColor.BLACK);
+        gameBoard[3][2].setStoneColor(Stone.StoneColor.BLACK);
+        gameBoard[3][3].setStoneColor(Stone.StoneColor.BLACK);
+
+
+
+
+
+
+
+        gameBoard[1][1].setStoneColor(Stone.StoneColor.WHITE);
+        gameBoard[1][2].setStoneColor(Stone.StoneColor.WHITE);
+
+        gameBoard[2][1].setStoneColor(Stone.StoneColor.WHITE);
+        gameBoard[2][2].setStoneColor(Stone.StoneColor.WHITE);
+        gameBoard[2][3].setStoneColor(Stone.StoneColor.WHITE);
+
+        gameBoard[3][1].setStoneColor(Stone.StoneColor.WHITE);
+    }
+
+
 }
