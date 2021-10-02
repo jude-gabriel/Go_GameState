@@ -291,6 +291,8 @@ public class GoGameState {
                         (checkCap6 == false) || (checkCap7 == false) || (checkCap8 == false)){
                     if(hasEmptyNeighbor == false) {
                         commenceCapture();
+                        player2Score = 0;
+                        calculateWhiteScore();
                         //Change the players turn to the next player
                         isPlayer1 = !isPlayer1;
                         totalMoves++;
@@ -299,6 +301,8 @@ public class GoGameState {
                     }
                     else{
                         resetCapture();
+                        player2Score = 0;
+                        calculateWhiteScore();
                         hasEmptyNeighbor = false;
                         isPlayer1 = !isPlayer1;
                         return false;
@@ -306,6 +310,8 @@ public class GoGameState {
                 }
                 else{
                     resetCapture();
+                    player2Score = 0;
+                    calculateWhiteScore();
                     hasEmptyNeighbor = false;
                     //Change the players turn to the next player
                     isPlayer1 = !isPlayer1;
@@ -1279,11 +1285,11 @@ public class GoGameState {
     }
 
 
-
-
-
-
-
+    /**
+     * Calculates the Score for player 1 (black stones).
+     *
+     * @author Jude Gabriel
+     */
     public void calculateBlackScore(){
         for(int i = 0; i < boardSize; i++){
             for(int j = 0; j < boardSize; j++){
@@ -1300,6 +1306,19 @@ public class GoGameState {
     }
 
 
+    /**
+     * Helper method for calculateBlackScore(). Takes the current location
+     * of a liberty and travels left, right, up, and down until a
+     * black square is hit
+     *
+     * @param i     The i index of the liberty
+     * @param j     The j index of the liberty
+     *
+     * @return true if the liberty and neighboring liberties are surrounded
+     *          by black stones
+     *
+     * @author Jude Gabriel
+     */
     public boolean calculateBlackSurround(int i, int j){
         int x = i;
         int y = j;
@@ -1350,6 +1369,87 @@ public class GoGameState {
 
 
 
+    /**
+     * Calculates the Score for player 2 (white stones).
+     *
+     * @author Jude Gabriel
+     */
+    public void calculateWhiteScore(){
+        for(int i = 0; i < boardSize; i++){
+            for(int j = 0; j < boardSize; j++){
+                if(gameBoard[i][j].getStoneColor() == Stone.StoneColor.WHITE){
+                    player2Score++;
+                }
+                if(gameBoard[i][j].getStoneColor() == Stone.StoneColor.NONE){
+                    if(calculateWhiteSurround(i, j)){
+                        player2Score++;
+                    }
+                }
+            }
+        }
+    }
+
+
+    /**
+     * Helper method for calculateWhiteScore(). Takes the current location
+     * of a liberty and travels left, right, up, and down until a
+     * black square is hit
+     *
+     * @param i     The i index of the liberty
+     * @param j     The j index of the liberty
+     *
+     * @return true if the liberty and neighboring liberties are surrounded
+     *          by white stones
+     *
+     * @author Jude Gabriel
+     */
+    public boolean calculateWhiteSurround(int i, int j){
+        int x = i;
+        int y = j;
+        int count = 0;
+
+        while(x >= 0) {
+            if (gameBoard[x][y].getStoneColor() == Stone.StoneColor.WHITE) {
+                count++;
+                break;
+            }
+            x--;
+        }
+
+        x = i;
+        while(x <= gameBoard.length - 1){
+            if (gameBoard[x][y].getStoneColor() == Stone.StoneColor.WHITE) {
+                count++;
+                break;
+            }
+            x++;
+        }
+
+        x = i;
+        while(y >= 0) {
+            if (gameBoard[x][y].getStoneColor() == Stone.StoneColor.WHITE) {
+                count++;
+                break;
+            }
+            y--;
+        }
+
+        y = j;
+        while(y <= gameBoard.length - 1){
+            if (gameBoard[x][y].getStoneColor() == Stone.StoneColor.WHITE) {
+                count++;
+                break;
+            }
+            y++;
+        }
+
+        if(count == 4){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 
 
 
