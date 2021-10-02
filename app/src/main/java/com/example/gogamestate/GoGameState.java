@@ -1270,6 +1270,14 @@ public class GoGameState {
         String firstPlayerScore = "Player 1 Score: " + player1Score;
         String secondPlayerScore = "Player 2 Score: " + player2Score;
 
+        String playerTurn;
+        if(isPlayer1){
+            playerTurn = "Player 1's turn.";
+        }
+        else{
+            playerTurn = "Player 2's turn.";
+        }
+
         //Make timer for elapsed time string
 
         String theBoard = "";
@@ -1279,7 +1287,7 @@ public class GoGameState {
             }
         }
 
-        String info = firstPlayerScore + " " + secondPlayerScore + " " + theBoard;
+        String info = playerTurn + " " + firstPlayerScore + " " + secondPlayerScore + " " + theBoard;
 
         return info;
     }
