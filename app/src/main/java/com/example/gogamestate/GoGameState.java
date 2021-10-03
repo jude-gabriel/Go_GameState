@@ -1518,6 +1518,4 @@ public class GoGameState {
 
         gameBoard[3][1].setStoneColor(Stone.StoneColor.WHITE);
     }
-
-
 }

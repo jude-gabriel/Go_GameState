@@ -143,6 +143,8 @@ public class Stone {
      * Getter for the stones checked value
      *
      * @return the CheckedStone value
+     *
+     * @author Jude Gabriel
      */
     public CheckedStone getCheckedStone(){
         return checkedStone;
@@ -153,6 +155,8 @@ public class Stone {
      * Setter for the stones checked value
      *
      * @param checkVal      The CheckedValue to set the stone as
+     *
+     * @author Jude Gabriel
      */
     public void setCheckedStone(CheckedStone checkVal){
         checkedStone = checkVal;
