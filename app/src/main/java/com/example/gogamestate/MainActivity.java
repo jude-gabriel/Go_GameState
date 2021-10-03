@@ -8,7 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity{
 
     public int counter = 0;
     public float x;
@@ -49,49 +49,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         boolean move = gameState.playerMove(600, 1450);
                         theText.setText(gameState.toString());
                     }
+
+                    /* TEST FOR CAPTURE */
+                    if(counter == 3) {
+                        boolean move2 = gameState.playerMove(950, 750);
+                        theText.setText(gameState.toString());
+                    }
+
                     counter++;
                 }
             }
         });
     }
-
-
-
-
-
-
-    /**
-     * runs tests based on what time the Run Test button was pressed
-     *
-     * @param  view
-     * @return void
-     *
-     * @author Mia Anderson
-    *
-    **/
-
-    @Override
-    public void onClick(View view) {
-
-//        if(gameState != null) {
-//            boolean move = gameState.playerMove(600, 400);
-//        }
-
-
-
-
-
-
-
-//        //restart the test runs if clicked more than 3 times
-//        if(counter == 3){
-//            counter = 0;
-//        }
-//        //increment counter each time run test is clicked so we
-//        //know what test to run
-//        counter++;
-
-    }
-
-
 }
