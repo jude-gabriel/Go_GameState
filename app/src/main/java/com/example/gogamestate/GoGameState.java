@@ -157,8 +157,8 @@ public class GoGameState {
                 player1Score = 0;
                 player2Score = 0;
                 totalMoves++;
-                calclulateScore(Stone.StoneColor.BLACK);
-                calclulateScore(Stone.StoneColor.WHITE);
+                player1Score += calclulateScore(Stone.StoneColor.BLACK, Stone.StoneColor.WHITE);
+                player2Score += calclulateScore(Stone.StoneColor.WHITE, Stone.StoneColor.BLACK);
                 return true;
                 }
             else{
@@ -184,8 +184,8 @@ public class GoGameState {
                 player1Score = 0;
                 player2Score = 0;
                 totalMoves++;
-                calclulateScore(Stone.StoneColor.BLACK);
-                calclulateScore(Stone.StoneColor.WHITE);
+                player1Score += calclulateScore(Stone.StoneColor.BLACK, Stone.StoneColor.WHITE);
+                player2Score += calclulateScore(Stone.StoneColor.WHITE, Stone.StoneColor.BLACK);
                 return true;
             }
             else{
@@ -686,9 +686,12 @@ public class GoGameState {
 
 
 
-        public void calculateScore(Stone.StoneColor color){
+    public int calculateScore(Stone.StoneColor colorToScore, Stone.StoneColor otherColor){
+        int totalScore = 0;
 
-        }
+
+        return totalScore;
+    }
 
 
 
