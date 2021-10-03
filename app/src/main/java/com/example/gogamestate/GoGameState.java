@@ -157,8 +157,8 @@ public class GoGameState {
                 player1Score = 0;
                 player2Score = 0;
                 totalMoves++;
-                calculateBlackScore();
-                calculateWhiteScore();
+                calclulateScore(Stone.StoneColor.BLACK);
+                calclulateScore(Stone.StoneColor.WHITE);
                 return true;
                 }
             else{
@@ -184,8 +184,8 @@ public class GoGameState {
                 player1Score = 0;
                 player2Score = 0;
                 totalMoves++;
-                calculateBlackScore();
-                calculateWhiteScore();
+                calclulateScore(Stone.StoneColor.BLACK);
+                calclulateScore(Stone.StoneColor.WHITE);
                 return true;
             }
             else{
@@ -676,307 +676,32 @@ public class GoGameState {
     }
 
 
-    /**
-     * Calculates the Score for player 1 (black stones).
-     *
-     * @author Jude Gabriel
-     */
-    public void calculateBlackScore(){
-
-        for(int i = 0; i < boardSize; i++){
-            for(int j = 0; j < boardSize; j++) {
-                if (gameBoard[i][j].getStoneColor() == Stone.StoneColor.BLACK) {
-                    player1Score++;
-                }
-                if (gameBoard[i][j].getStoneColor() == Stone.StoneColor.WHITE){
-                    calculateBlackSurround(i - 1, j);
-                    calculateBlackSurround(i, j - 1);
-                    calculateBlackSurround(i + 1, j);
-                    calculateBlackSurround(i, j + 1);
-                }
-            }
-        }
-
-        for(int i = 0; i < boardSize; i++){
-            for(int j = 0; j < boardSize; j++) {
-                if(gameBoard[i][j].getStoneColor() == Stone.StoneColor.NONE){
-                    if (gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.FALSE) {
-                        if(findBlackNeighbors(i, j)){
-                            player1Score++;
-                        }
-                    }
-                }
-            }
-        }
-
-        resetCapture();
-    }
 
 
-    /**
-     * Helper method for calculateBlackScore(). Marks all neighbors of a white stone
-     * as true
-     *
-     * @param i     The i index of the liberty
-     * @param j     The j index of the liberty
-     *
-     *
-     * @author Jude Gabriel
-     */
-    public void calculateBlackSurround(int i, int j) {
-        if((i < 0) || ( j < 0) || (i > gameBoard.length - 1) || (j > gameBoard.length - 1)) {
-            return;
-        }
-        if(gameBoard[i][j].getStoneColor() == Stone.StoneColor.BLACK){
-            return;
-        }
-        if(gameBoard[i][j].getStoneColor() == Stone.StoneColor.WHITE){
-            return;
-        }
-        if(gameBoard[i][j].getStoneColor() == Stone.StoneColor.NONE){
-            if(gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.FALSE){
-                gameBoard[i][j].setCheckedStone(Stone.CheckedStone.TRUE);
-                calculateBlackSurround(i - 1, j);
-                calculateBlackSurround(i, j - 1);
-                calculateBlackSurround(i + 1, j);
-                calculateBlackSurround(i, j + 1);
-            }
-            else{
-                return;
-            }
-        }
-    }
 
 
-    /**
-     * Checks if an empty liberty is surrounded by a black stone
-     *
-     * @param i     i index of the liberty
-     * @param j     j index of the liberty
-     *
-     * @return true if the liberty is surrounded
-     *
-     * @author Jude Gabriel
-     */
-    public boolean findBlackNeighbors(int i, int j){
-        int x = i;
-        int y = j;
-        int count = 0;
-        int sideBump = 0;
-
-        if((x == 0) || (x == gameBoard.length - 1)){
-            count++;
-        }
-
-        if((y == 0) || (y == gameBoard.length - 1)){
-            count++;
-        }
-
-        while(x >= 0) {
-            if (gameBoard[x][y].getStoneColor() == Stone.StoneColor.BLACK) {
-                count++;
-                break;
-            }
-            if(x == 0 && gameBoard[x][y].getStoneColor() == Stone.StoneColor.NONE){
-                sideBump++;
-                break;
-            }
-            x--;
-        }
-
-        x = i;
-        while(x <= gameBoard.length - 1){
-            if (gameBoard[x][y].getStoneColor() == Stone.StoneColor.BLACK) {
-                count++;
-                break;
-            }
-            if(x == gameBoard.length - 1 && gameBoard[x][y].getStoneColor() == Stone.StoneColor.NONE){
-                sideBump++;
-                break;
-            }
-            x++;
-        }
-
-        x = i;
-        while(y >= 0) {
-            if (gameBoard[x][y].getStoneColor() == Stone.StoneColor.BLACK) {
-                count++;
-                break;
-            }
-            if(y == 0 && gameBoard[x][y].getStoneColor() == Stone.StoneColor.NONE){
-                sideBump++;
-                break;
-            }
-            y--;
-        }
-
-        y = j;
-        while(y <= gameBoard.length - 1){
-            if (gameBoard[x][y].getStoneColor() == Stone.StoneColor.BLACK) {
-                count++;
-                break;
-            }
-            if(y == gameBoard.length - 1 && gameBoard[x][y].getStoneColor() == Stone.StoneColor.NONE){
-                sideBump++;
-                break;
-            }
-            y++;
-        }
-
-        if(count == 4){
-            return true;
-        }
-        else if(sideBump == 2 && count == 2){
-            return true;
-        }
-        else if(sideBump == 1 && count == 3){
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
 
 
-    /**
-     * Calculates the Score for player 2 (white stones).
-     *
-     * @author Jude Gabriel
-     */
-    public void calculateWhiteScore(){
-        for(int i = 0; i < boardSize; i++){
-            for(int j = 0; j < boardSize; j++) {
-                if (gameBoard[i][j].getStoneColor() == Stone.StoneColor.WHITE) {
-                    player2Score++;
-                }
-                if (gameBoard[i][j].getStoneColor() == Stone.StoneColor.BLACK){
-                    calculateWhiteSurround(i - 1, j);
-                    calculateWhiteSurround(i, j - 1);
-                    calculateWhiteSurround(i + 1, j);
-                    calculateWhiteSurround(i, j + 1);
-                }
-            }
-        }
-
-        for(int i = 0; i < boardSize; i++){
-            for(int j = 0; j < boardSize; j++) {
-                if(gameBoard[i][j].getStoneColor() == Stone.StoneColor.NONE){
-                    if (gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.FALSE) {
-                        if(findWhiteNeighbors(i, j)){
-                            player2Score++;
-                        }
-                    }
-                }
-            }
-        }
-
-        resetCapture();
-    }
 
 
-    /**
-     * Helper method for calculateWhiteScore. Marks all neighbors
-     * of a black stone as true
-     *
-     * @param i     The i index of the liberty
-     * @param j     The j index of the liberty
-     *
-     * @return true if the liberty and neighboring liberties are surrounded
-     *          by white stones
-     *
-     * @author Jude Gabriel
-     */
-    public void calculateWhiteSurround(int i, int j){
-        if((i < 0) || ( j < 0) || (i > gameBoard.length - 1) || (j > gameBoard.length - 1)) {
-            return;
-        }
-        if(gameBoard[i][j].getStoneColor() == Stone.StoneColor.WHITE){
-            return;
-        }
-        if(gameBoard[i][j].getStoneColor() == Stone.StoneColor.BLACK){
-            return;
-        }
-        if(gameBoard[i][j].getStoneColor() == Stone.StoneColor.NONE){
-            if(gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.FALSE){
-                gameBoard[i][j].setCheckedStone(Stone.CheckedStone.TRUE);
-                calculateWhiteSurround(i - 1, j);
-                calculateWhiteSurround(i, j - 1);
-                calculateWhiteSurround(i + 1, j);
-                calculateWhiteSurround(i, j + 1);
-            }
-            else{
-                return;
-            }
-        }
-    }
 
 
-    /**
-     * Checks if an empty liberty is surrounded by white stones
-     *
-     * @param i     The i index of the liberty
-     * @param j     The j index of the liberty
-     *
-     * @return true if the liberty is surrounded
-     *
-     * @author Jude Gabriel
-     */
-    public boolean findWhiteNeighbors(int i, int j){
-        int x = i;
-        int y = j;
-        int count = 0;
-        int sideBump = 0;
+        public void calculateScore(Stone.StoneColor color){
 
-        if((x == 0) || (x == gameBoard.length - 1)){
-            count++;
         }
 
-        if((y == 0) || (y == gameBoard.length - 1)){
-            count++;
-        }
 
-        while(x >= 0) {
-            if (gameBoard[x][y].getStoneColor() == Stone.StoneColor.WHITE) {
-                count++;
-                break;
-            }
-            x--;
-        }
 
-        x = i;
-        while(x <= gameBoard.length - 1){
-            if (gameBoard[x][y].getStoneColor() == Stone.StoneColor.WHITE) {
-                count++;
-                break;
-            }
-            x++;
-        }
 
-        x = i;
-        while(y >= 0) {
-            if (gameBoard[x][y].getStoneColor() == Stone.StoneColor.WHITE) {
-                count++;
-                break;
-            }
-            y--;
-        }
 
-        y = j;
-        while(y <= gameBoard.length - 1){
-            if (gameBoard[x][y].getStoneColor() == Stone.StoneColor.WHITE) {
-                count++;
-                break;
-            }
-            y++;
-        }
 
-        if(count == 4){
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
+
+
+
+
+
+
+
 
 
     /** HELPER METHODS FOR TESTING **/
