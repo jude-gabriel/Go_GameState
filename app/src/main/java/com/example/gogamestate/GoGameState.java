@@ -157,8 +157,8 @@ public class GoGameState {
                 player1Score = 0;
                 player2Score = 0;
                 totalMoves++;
-                player1Score += calclulateScore(Stone.StoneColor.BLACK, Stone.StoneColor.WHITE);
-                player2Score += calclulateScore(Stone.StoneColor.WHITE, Stone.StoneColor.BLACK);
+                player1Score += calculateScore(Stone.StoneColor.BLACK, Stone.StoneColor.WHITE);
+                player2Score += calculateScore(Stone.StoneColor.WHITE, Stone.StoneColor.BLACK);
                 return true;
                 }
             else{
@@ -184,8 +184,8 @@ public class GoGameState {
                 player1Score = 0;
                 player2Score = 0;
                 totalMoves++;
-                player1Score += calclulateScore(Stone.StoneColor.BLACK, Stone.StoneColor.WHITE);
-                player2Score += calclulateScore(Stone.StoneColor.WHITE, Stone.StoneColor.BLACK);
+                player1Score += calculateScore(Stone.StoneColor.BLACK, Stone.StoneColor.WHITE);
+                player2Score += calculateScore(Stone.StoneColor.WHITE, Stone.StoneColor.BLACK);
                 return true;
             }
             else{
