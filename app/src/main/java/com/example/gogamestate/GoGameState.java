@@ -1,6 +1,7 @@
 package com.example.gogamestate;
 
 
+import android.os.CountDownTimer;
 
 public class GoGameState {
 
@@ -17,6 +18,8 @@ public class GoGameState {
     private Stone[][] stoneCopiesFirst; //Stores the board from two moves ago
     private Stone[][] stoneCopiesSecond;    //Stores the board from one move ago
     private boolean hasEmptyNeighbor;   //Boolean value for if a stone has an empty neighbor
+    private  int totalTime;
+    private CountDownTimer countUpTimer;
 
 
     /**
@@ -46,6 +49,21 @@ public class GoGameState {
 
         //Set hasEmptyNeighbor to false, used to check for captures
         hasEmptyNeighbor = false;
+
+        countUpTimer = new CountDownTimer(30000, 1000){
+            @Override
+            public void onTick(long millisUntilFinish){
+                totalTime++;
+
+            }
+
+            @Override
+            public void onFinish(){
+                countUpTimer.start();
+
+            }
+        };
+        countUpTimer.start();
 
     }
 
@@ -1270,6 +1288,11 @@ public class GoGameState {
         String firstPlayerScore = "Player 1 Score: " + player1Score;
         String secondPlayerScore = "Player 2 Score: " + player2Score;
 
+        int minutes = totalTime / 60;
+        int seconds = totalTime - (minutes * 60);
+
+        String timerString = "Time:" + minutes + ":" + seconds;
+
         String playerTurn;
         if(isPlayer1){
             playerTurn = "Player 1's turn.";
@@ -1278,8 +1301,6 @@ public class GoGameState {
             playerTurn = "Player 2's turn.";
         }
 
-        //Make timer for elapsed time string
-
         String theBoard = "";
         for(int i = 0; i < boardSize; i++){
             for(int j = 0; j < boardSize; j++){
@@ -1287,9 +1308,17 @@ public class GoGameState {
             }
         }
 
-        String info = playerTurn + " " + firstPlayerScore + " " + secondPlayerScore + " " + theBoard;
+        String info = timerString + " " + playerTurn + " " + firstPlayerScore + " " + secondPlayerScore + " " + theBoard;
 
         return info;
+    }
+
+    public void countUpTimer(){
+
+    }
+
+    public void onTick(){
+
     }
 
 
