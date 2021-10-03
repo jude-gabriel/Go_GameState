@@ -44,15 +44,16 @@ public class MainActivity extends AppCompatActivity{
                         theText.setText(gameState.toString());
                     }
 
-                    //Place a stone to create a capture
                     if(counter == 2) {
-                        boolean move = gameState.playerMove(600, 1450);
+                        boolean move = gameState.playerMove(600, 750);
                         theText.setText(gameState.toString());
                     }
-
-                    /* TEST FOR CAPTURE */
                     if(counter == 3) {
-                        boolean move2 = gameState.playerMove(950, 750);
+                        boolean move = gameState.playerMove(600, 400);
+                        theText.setText(gameState.toString());
+                    }
+                    if(counter == 4) {
+                        boolean move = gameState.playerMove(950, 400);
                         theText.setText(gameState.toString());
                     }
 

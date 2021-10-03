@@ -56,6 +56,14 @@ public class Stone {
         checkedStone = CheckedStone.FALSE;
     }
 
+    public int getRadius(){
+        return radius;
+    }
+
+    public void setRadius(int r){
+        radius = r;
+    }
+
 
     /**
      * Setter for the Stone's StoneColor enum
@@ -83,8 +91,11 @@ public class Stone {
      * @return a float representing the x value
      */
     public float getxLocation(){
-
         return xLocation;
+    }
+
+    public void setxLocation(float x){
+        xLocation = x;
     }
 
 
@@ -94,8 +105,12 @@ public class Stone {
      * @return a float representing the x value
      */
     public float getyLocation(){
-
         return yLocation;
+    }
+
+
+    public void setyLocation(float y){
+        yLocation = y;
     }
 
 
@@ -106,6 +121,10 @@ public class Stone {
      */
     public float getxLeft(){
         return xLeft;
+    }
+
+    public void setxLeft(float x){
+        xLeft = x;
     }
 
 
@@ -119,6 +138,11 @@ public class Stone {
     }
 
 
+    public void setxRight(float x){
+        xRight = x;
+    }
+
+
     /**
      * Getter for the topmost y value of the stone
      *
@@ -126,6 +150,10 @@ public class Stone {
      */
     public float getyTop(){
         return yTop;
+    }
+
+    public void setyTop(float y){
+        yTop = y;
     }
 
 
@@ -136,6 +164,10 @@ public class Stone {
      */
     public float getyBottom(){
         return yBottom;
+    }
+
+    public void setyBottom(float y){
+        yBottom = y;
     }
 
 

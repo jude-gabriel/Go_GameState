@@ -17,7 +17,6 @@ public class GoGameState {
     private int totalMoves;     //Total number of moves made in game
     private Stone[][] stoneCopiesFirst; //Stores the board from two moves ago
     private Stone[][] stoneCopiesSecond;    //Stores the board from one move ago
-    private boolean hasEmptyNeighbor;   //Boolean value for if a stone has an empty neighbor
     private  int totalTime;
     private CountDownTimer countUpTimer;
 
@@ -50,9 +49,6 @@ public class GoGameState {
         //Initialize the arrays that store former board positions
         stoneCopiesFirst = new Stone[boardSize][boardSize];
         stoneCopiesSecond = new Stone[boardSize][boardSize];
-
-        //Set hasEmptyNeighbor to false, used to check for captures
-        hasEmptyNeighbor = false;
 
         countUpTimer = new CountDownTimer(30000, 1000){
             @Override
@@ -132,30 +128,12 @@ public class GoGameState {
         int iIndex = indexVals[0];
         int jIndex = indexVals[1];
 
-        boolean checkCap1 = true;
-        boolean checkCap2 = true;
-        boolean checkCap3 = true;
-        boolean checkCap4 = true;
-        boolean checkCap5 = true;
-        boolean checkCap6 = true;
-        boolean checkCap7 = true;
-        boolean checkCap8 = true;
-
-        if(totalMoves == 2){
-            for(int i = 0; i < boardSize; i++){
-                for(int j = 0; j < boardSize; j++){
-                    stoneCopiesFirst[i][j] = gameBoard[i][j];
-                }
-            }
+        if(totalMoves == 1){
+            stoneCopiesFirst = deepCopyArray(gameBoard);
         }
-        if (totalMoves == 3){
-            for(int i = 0; i < boardSize; i++){
-                for(int j = 0; j < boardSize; j++) {
-                    stoneCopiesSecond[i][j] = gameBoard[i][j];
-                }
-            }
+        if (totalMoves == 2){
+            stoneCopiesSecond = deepCopyArray(gameBoard);
         }
-
 
         //Check if the move is valid
         boolean validMove = isValidLocation(iIndex, jIndex);
@@ -164,210 +142,58 @@ public class GoGameState {
         if(isPlayer1) {
             if (validMove) {
                 gameBoard[iIndex][jIndex].setStoneColor(Stone.StoneColor.BLACK);
-
-                if (iIndex > 0) {
-                    if (gameBoard[iIndex - 1][jIndex].getStoneColor() ==
-                            Stone.StoneColor.WHITE) {
-                        checkCap1 = checkCaptureWhite(iIndex - 1, jIndex);
+                for(int i = 0; i < boardSize; i++){
+                    for(int j = 0; j < boardSize; j++){
+                        if(gameBoard[i][j].getStoneColor() == Stone.StoneColor.NONE){
+                            if(gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.FALSE){
+                                checkCapture(i, j, Stone.StoneColor.BLACK, Stone.StoneColor.WHITE);
+                            }
+                        }
                     }
                 }
-                if (iIndex < gameBoard.length - 1) {
-                    if (gameBoard[iIndex + 1][jIndex].getStoneColor() ==
-                            Stone.StoneColor.WHITE) {
-                        checkCap2 = checkCaptureWhite(iIndex + 1, jIndex);
-                    }
-                }
-                if (jIndex > 0) {
-                    if (gameBoard[iIndex][jIndex - 1].getStoneColor() ==
-                            Stone.StoneColor.WHITE) {
-                        checkCap3 = checkCaptureWhite(iIndex, jIndex - 1);
-                    }
-                }
-                if (jIndex < gameBoard.length - 1) {
-                    if (gameBoard[iIndex][jIndex + 1].getStoneColor() ==
-                            Stone.StoneColor.WHITE) {
-                        checkCap4 = checkCaptureWhite(iIndex, jIndex);
-                    }
-                }
-                if((iIndex > 0) && (jIndex > 0)){
-                    if(gameBoard[iIndex - 1][jIndex - 1].getStoneColor() ==
-                            Stone.StoneColor.WHITE){
-                        checkCap5 = checkCaptureWhite(iIndex - 1, jIndex - 1);
-                    }
-                }
-                if((iIndex < gameBoard.length - 1) && (jIndex < gameBoard.length - 1)){
-                    if(gameBoard[iIndex + 1][jIndex + 1].getStoneColor() ==
-                            Stone.StoneColor.WHITE){
-                        checkCap6 = checkCaptureWhite(iIndex + 1, jIndex + 1);
-                    }
-                }
-                if((iIndex < gameBoard.length - 1) && (jIndex > 0)){
-                    if(gameBoard[iIndex + 1][jIndex - 1].getStoneColor() ==
-                            Stone.StoneColor.WHITE){
-                        checkCap7 = checkCaptureWhite(iIndex + 1, jIndex - 1);
-                    }
-                }
-                if((iIndex > 0) && (jIndex < gameBoard.length - 1)){
-                    if(gameBoard[iIndex - 1][jIndex + 1].getStoneColor() ==
-                            Stone.StoneColor.WHITE){
-                        checkCap8 = checkCaptureWhite(iIndex - 1, jIndex + 1);
-                    }
-                }
-
-                if((checkCap1 == false) || (checkCap2 == false) || (checkCap3 == false) ||
-                        (checkCap4 == false) || (checkCap5 == false) ||
-                        (checkCap6 == false) || (checkCap7 == false) || (checkCap8 == false)) {
-                    if(hasEmptyNeighbor == false){
-                        commenceCapture();
-                        player1Score = 0;
-                        player2Score = 0;
-                        calculateBlackScore();
-                        calculateWhiteScore();
-                        //Change the players turn to the next player
-                        isPlayer1 = !isPlayer1;
-                        totalMoves++;
-                        hasEmptyNeighbor = false;
-                        return true;
-                    }
-                    else{
-                        resetCapture();
-                        player1Score = 0;
-                        player2Score = 0;
-                        calculateBlackScore();
-                        calculateWhiteScore();
-                        hasEmptyNeighbor = false;
-                        //Change the players turn to the next player
-                        isPlayer1 = !isPlayer1;
-                        return false;
-                    }
-                }
-                else{
-                    resetCapture();
-                    player1Score = 0;
-                    player2Score = 0;
-                    calculateBlackScore();
-                    calculateWhiteScore();
-                    hasEmptyNeighbor = false;
-                    //Change the players turn to the next player
-                    isPlayer1 = !isPlayer1;
-                    return false;
-                }
-            }
-            else{
-                //Change the players turn to the next player
+                commenceCapture(Stone.StoneColor.WHITE);
+                resetCapture();
                 isPlayer1 = !isPlayer1;
-                hasEmptyNeighbor = false;
+                player1Score = 0;
+                player2Score = 0;
+                totalMoves++;
+                calculateBlackScore();
+                calculateWhiteScore();
+                return true;
+                }
+            else{
                 return false;
             }
         }
 
-
-        else if(!isPlayer1){
+        else{
             if(validMove){
                 gameBoard[iIndex][jIndex].setStoneColor(Stone.StoneColor.WHITE);
-                if (iIndex > 0) {
-                    if (gameBoard[iIndex - 1][jIndex].getStoneColor() ==
-                            Stone.StoneColor.BLACK) {
-                        checkCap1 = checkCaptureBlack(iIndex - 1, jIndex);
+                for(int i = 0; i < boardSize; i++){
+                    for(int j = 0; j < boardSize; j++){
+                        if(gameBoard[i][j].getStoneColor() == Stone.StoneColor.NONE){
+                            if(gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.FALSE){
+                                checkCapture(i, j, Stone.StoneColor.WHITE, Stone.StoneColor.BLACK);
+                            }
+                        }
                     }
                 }
-                if (iIndex < gameBoard.length - 1) {
-                    if (gameBoard[iIndex + 1][jIndex].getStoneColor() ==
-                            Stone.StoneColor.BLACK) {
-                        checkCap2 = checkCaptureBlack(iIndex + 1, jIndex);
-                    }
-                }
-                if (jIndex > 0) {
-                    if (gameBoard[iIndex][jIndex - 1].getStoneColor() ==
-                            Stone.StoneColor.BLACK) {
-                        checkCap3 = checkCaptureBlack(iIndex, jIndex - 1);
-                    }
-                }
-                if (jIndex < gameBoard.length - 1) {
-                    if (gameBoard[iIndex][jIndex + 1].getStoneColor() ==
-                            Stone.StoneColor.BLACK) {
-                        checkCap4 = checkCaptureBlack(iIndex, jIndex);
-                    }
-                }
-                if((iIndex > 0) && (jIndex > 0)){
-                    if(gameBoard[iIndex - 1][jIndex - 1].getStoneColor() ==
-                            Stone.StoneColor.BLACK){
-                        checkCap5 = checkCaptureBlack(iIndex - 1, jIndex - 1);
-                    }
-                }
-                if((iIndex < gameBoard.length - 1) && (jIndex < gameBoard.length - 1)){
-                    if(gameBoard[iIndex + 1][jIndex + 1].getStoneColor() ==
-                            Stone.StoneColor.BLACK){
-                        checkCap6 = checkCaptureBlack(iIndex + 1, jIndex + 1);
-                    }
-                }
-                if((iIndex < gameBoard.length - 1) && (jIndex > 0)){
-                    if(gameBoard[iIndex + 1][jIndex - 1].getStoneColor() ==
-                            Stone.StoneColor.BLACK){
-                        checkCap7 = checkCaptureBlack(iIndex + 1, jIndex - 1);
-                    }
-                }
-                if((iIndex > 0) && (jIndex < gameBoard.length - 1)){
-                    if(gameBoard[iIndex - 1][jIndex + 1].getStoneColor() ==
-                            Stone.StoneColor.BLACK){
-                        checkCap8 = checkCaptureBlack(iIndex - 1, jIndex + 1);
-                    }
-                }
-
-                if((checkCap1 == false) || (checkCap2 == false) || (checkCap3 == false) ||
-                        (checkCap4 == false) || (checkCap5 == false) ||
-                        (checkCap6 == false) || (checkCap7 == false) || (checkCap8 == false)){
-                    if(hasEmptyNeighbor == false) {
-                        commenceCapture();
-                        player1Score = 0;
-                        player2Score = 0;
-                        calculateBlackScore();
-                        calculateWhiteScore();
-                        //Change the players turn to the next player
-                        isPlayer1 = !isPlayer1;
-                        totalMoves++;
-                        hasEmptyNeighbor = false;
-                        return true;
-                    }
-                    else{
-                        resetCapture();
-                        player1Score = 0;
-                        player2Score = 0;
-                        calculateBlackScore();
-                        calculateWhiteScore();
-                        hasEmptyNeighbor = false;
-                        isPlayer1 = !isPlayer1;
-                        return false;
-                    }
-                }
-                else{
-                    resetCapture();
-                    player1Score = 0;
-                    player2Score = 0;
-                    calculateBlackScore();
-                    calculateWhiteScore();
-                    hasEmptyNeighbor = false;
-                    //Change the players turn to the next player
-                    isPlayer1 = !isPlayer1;
-                    return false;
-                }
+                commenceCapture(Stone.StoneColor.BLACK);
+                resetCapture();
+                isPlayer1 = !isPlayer1;
+                player1Score = 0;
+                player2Score = 0;
+                totalMoves++;
+                calculateBlackScore();
+                calculateWhiteScore();
+                return true;
             }
             else{
-                //Change the players turn to the next player
-                hasEmptyNeighbor = false;
-                isPlayer1 = !isPlayer1;
+
                 return false;
             }
         }
-
-        //This case shouldn't be hit
-        else {
-            //Change the players turn to the next player
-            isPlayer1 = !isPlayer1;
-            return false;
-        }
     }
-
 
 
     /**
@@ -420,7 +246,8 @@ public class GoGameState {
      * NOTE: NOT FINISHED. NEEDS TO CHECK FOR REPEATED MOVE
      */
     public boolean isValidLocation(int iIndex, int jIndex) {
-        boolean canCapture;
+        boolean capCheck = false;
+        Stone[][] copyArr = deepCopyArray(gameBoard);
 
         //Check if the user clicked on a liberty
         if(iIndex == -1 || jIndex == -1){
@@ -435,612 +262,99 @@ public class GoGameState {
         //Check if the stone will capture itself
         if(isPlayer1) {
             gameBoard[iIndex][jIndex].setStoneColor(Stone.StoneColor.BLACK);
-            if(checkCaptureBlack(iIndex, jIndex) == false){
-                gameBoard[iIndex][jIndex].setStoneColor(Stone.StoneColor.NONE);
-                resetCapture();
-                hasEmptyNeighbor = false;
+            capCheck = selfCapture(iIndex, jIndex, Stone.StoneColor.WHITE, Stone.StoneColor.BLACK);
+            gameBoard = deepCopyArray(copyArr);
+            if(capCheck){
                 return false;
             }
         }
 
-        if(!isPlayer1){
+        if(!isPlayer1) {
             gameBoard[iIndex][jIndex].setStoneColor(Stone.StoneColor.WHITE);
-            if(checkCaptureWhite(iIndex, jIndex) == false){
-                gameBoard[iIndex][jIndex].setStoneColor(Stone.StoneColor.NONE);
-                resetCapture();
-                hasEmptyNeighbor = false;
+            capCheck = selfCapture(iIndex, jIndex, Stone.StoneColor.BLACK, Stone.StoneColor.WHITE);
+            gameBoard = deepCopyArray(copyArr);
+            if(capCheck){
                 return false;
             }
         }
 
-
-        if(checkRepeatedPosition(iIndex, jIndex) == true){
-            return false;
+        if(totalMoves >= 2) {
+            if (checkRepeatedPosition(iIndex, jIndex) == true) {
+                return false;
+            }
         }
 
         //If all above cases do not return false then it is a valid move
-        hasEmptyNeighbor = false;
         resetCapture();
         return true;
     }
 
 
     /**
-     * Checks for captured white stones
+     * Checks if a stone can capture itself
+     * @param x     i index of stone
+     * @param y     j index of stone
+     * @param checkCol      Capturing stone color
+     * @param capCol        Captured stone color
+     *
+     * @return true if the stone captures itself
      *
      * @author Jude Gabriel
-     *
-     * NOTE: Requires testing
      */
-    public boolean checkCaptureWhite(int i, int j){
-        //Initially set the placed stone as checked
-        gameBoard[i][j].setCheckedStone(Stone.CheckedStone.TRUE);
-
-
-        /* Check if any neighbors are liberties, if they are then no capture.
-         * if they aren't then check if they already have been checked.
-         * if they have not then recursively call the method again
-         */
-
-        //Case 1: The stones are in the top left corner
-        if((i == 0) && (j == 0)) {
-            if (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i + 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.WHITE)) {
-                    checkCaptureWhite(i + 1, j);
-                }
-            }
-
-            if (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i][j + 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.WHITE)) {
-                    checkCaptureWhite(i, j + 1);
+    public boolean selfCapture(int x, int y, Stone.StoneColor checkCol, Stone.StoneColor capCol){
+        for(int i = 0; i < boardSize; i++){
+            for(int j = 0; j < boardSize; j++){
+                if(gameBoard[i][j].getStoneColor() == Stone.StoneColor.NONE){
+                    if(gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.FALSE){
+                        checkCapture(i, j, checkCol, capCol);
+                    }
                 }
             }
         }
+        commenceCapture(capCol);
+        resetCapture();
 
-        //Case 2: The stones are in the top right corner
-        else if((i == 0) && (j == gameBoard.length - 1)) {
-            if (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i + 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.WHITE)) {
-                    checkCaptureWhite(i + 1, j);
-                }
-            }
-
-            if (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i][j - 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.WHITE)) {
-                    checkCaptureWhite(i, j - 1);
-                }
-            }
+        if(gameBoard[x][y].getStoneColor() == capCol){
+            return false;
         }
-
-        //Case 3: The stones are in the bottom left corner
-        else if((i == gameBoard.length - 1) && (j == 0)) {
-            if (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i - 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.WHITE)) {
-                    checkCaptureWhite(i - 1, j);
-                }
-            }
-
-            if (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i][j + 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.WHITE)) {
-                    checkCaptureWhite(i, j + 1);
-                }
-            }
+        else{
+            return true;
         }
-
-        //Case 4: The stones are in the bottom right corner
-        else if((i == gameBoard.length - 1) && (j == gameBoard.length - 1)) {
-            if (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i - 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.WHITE)) {
-                    checkCaptureWhite(i - 1, j);
-                }
-            }
-
-            if (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i][j - 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.WHITE)) {
-                    checkCaptureWhite(i, j - 1);
-                }
-            }
-        }
-
-        //Case 5: The stones are on the left hand side
-        else if((i != gameBoard.length - 1) && (i != 0 ) && (j == 0)) {
-            if (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i + 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.WHITE)) {
-                    checkCaptureWhite(i + 1, j);
-                }
-            }
-
-            if (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i][j + 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.WHITE)) {
-                    checkCaptureWhite(i, j + 1);
-                }
-            }
-
-            if (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i - 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.WHITE)) {
-                    checkCaptureWhite(i - 1, j);
-                }
-            }
-        }
-
-        //Case 6: The stones are on the top row
-        else if((i == 0) && (j != 0) && (j != gameBoard.length - 1)) {
-            if (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i][j + 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.WHITE)) {
-                    checkCaptureWhite(i, j + 1);
-                }
-            }
-
-            if (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i][j - 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.WHITE)) {
-                    checkCaptureWhite(i, j - 1);
-                }
-            }
-
-            if (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i + 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.WHITE)) {
-                    checkCaptureWhite(i + 1, j);
-                }
-            }
-        }
-
-        //Case 7: The stones are on the bottom row
-        else if((i == gameBoard.length - 1) && (j != 0) && (j != gameBoard.length - 1)) {
-            if (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i][j + 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.WHITE)) {
-                    checkCaptureWhite(i, j + 1);
-                }
-            }
-
-            if (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i][j - 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.WHITE)) {
-                    checkCaptureWhite(i, j - 1);
-                }
-            }
-
-            if (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i - 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.WHITE)) {
-                    checkCaptureWhite(i - 1, j);
-                }
-            }
-        }
-
-        //Case 8: The stones are on the right hand side
-        else if((i != 0) && (i != gameBoard.length - 1) && (j == gameBoard.length - 1)) {
-            if (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i + 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.WHITE)) {
-                    checkCaptureWhite(i + 1, j);
-                }
-            }
-
-            if (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i][j - 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.WHITE)) {
-                    checkCaptureWhite(i, j - 1);
-                }
-            }
-
-            if (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i - 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.WHITE)) {
-                    checkCaptureWhite(i - 1, j);
-                }
-            }
-        }
-
-        //Case 9: The stones have all four neighbors
-        else {
-            if (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i + 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.WHITE)) {
-                    checkCaptureWhite(i + 1, j);
-                }
-            }
-
-            if (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i][j - 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.WHITE)) {
-                    checkCaptureWhite(i, j - 1);
-                }
-            }
-
-            if (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i - 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.WHITE)) {
-                    checkCaptureWhite(i - 1, j);
-                }
-            }
-
-            if (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i][j + 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.WHITE)) {
-                    checkCaptureWhite(i, j + 1);
-                }
-            }
-        }
-
-        //Recursion has ended
-        return false;
     }
 
+
     /**
-     * Checks for captured black stones
-     * @param i
-     * @param j
+     * Checks for captured stones
+     *
+     * @param i     i index of the stone
+     * @param j     j index of the stone
+     * @param checkCol  Color of capturing stones
+     * @param capCol    Color of captured stones
      *
      * @author Jude Gabriel
-     *
-     * NOTE: Requires Testing
      */
-    public boolean checkCaptureBlack(int i, int j){
-        //Initially set the placed stone as checked
-        gameBoard[i][j].setCheckedStone(Stone.CheckedStone.TRUE);
-
-
-        /* Check if any neighbors are liberties, if they are then no capture.
-         * if they aren't then check if they already have been checked.
-         * if they have not then recursively call the method again
-         */
-
-        //Case 1: The stones are in the top left corner
-        if((i == 0) && (j == 0)) {
-            if (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i + 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.BLACK)) {
-                    checkCaptureBlack(i + 1, j);
-                }
+    public void checkCapture(int i, int j, Stone.StoneColor checkCol, Stone.StoneColor capCol){
+        if(i < 0 || j < 0 || i > gameBoard.length - 1 || j > gameBoard.length - 1){
+            return;
+        }
+        if(gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.TRUE){
+            return;
+        }
+        if(gameBoard[i][j].getStoneColor() == checkCol){
+            return;
+        }
+        else{
+            if(gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.FALSE){
+                gameBoard[i][j].setCheckedStone(Stone.CheckedStone.TRUE);
+                checkCapture(i + 1, j, checkCol, capCol);
+                checkCapture(i - 1, j, checkCol, capCol);
+                checkCapture(i, j + 1, checkCol, capCol);
+                checkCapture(i, j - 1, checkCol, capCol);
             }
-
-            if (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i][j + 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.BLACK)) {
-                    checkCaptureBlack(i, j + 1);
-                }
+            else{
+                return;
             }
         }
-
-        //Case 2: The stones are in the top right corner
-        else if((i == 0) && (j == gameBoard.length - 1)) {
-            if (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i + 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.BLACK)) {
-                    checkCaptureBlack(i + 1, j);
-                }
-            }
-
-            if (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i][j - 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.BLACK)) {
-                    checkCaptureBlack(i, j - 1);
-                }
-            }
-        }
-
-        //Case 3: The stones are in the bottom left corner
-        else if((i == gameBoard.length - 1) && (j == 0)) {
-            if (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i - 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.BLACK)) {
-                    checkCaptureBlack(i - 1, j);
-                }
-            }
-
-            if (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i][j + 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.BLACK)) {
-                    checkCaptureBlack(i, j + 1);
-                }
-            }
-        }
-
-        //Case 4: The stones are in the bottom right corner
-        else if((i == gameBoard.length - 1) && (j == gameBoard.length - 1)) {
-            if (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i - 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.BLACK)) {
-                    checkCaptureBlack(i - 1, j);
-                }
-            }
-
-            if (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i][j - 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.BLACK)) {
-                    checkCaptureBlack(i, j - 1);
-                }
-            }
-        }
-
-        //Case 5: The stones are on the left hand side
-        else if((i != gameBoard.length - 1) && (i != 0 ) && (j == 0)) {
-            if (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i + 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.BLACK)) {
-                    checkCaptureBlack(i + 1, j);
-                }
-            }
-
-            if (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i][j + 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.BLACK)) {
-                    checkCaptureBlack(i, j + 1);
-                }
-            }
-
-            if (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i - 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.BLACK)) {
-                    checkCaptureBlack(i - 1, j);
-                }
-            }
-        }
-
-        //Case 6: The stones are on the top row
-        else if((i == 0) && (j != 0) && (j != gameBoard.length - 1)) {
-            if (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i][j + 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.BLACK)) {
-                    checkCaptureBlack(i, j + 1);
-                }
-            }
-
-            if (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i][j - 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.BLACK)) {
-                    checkCaptureBlack(i, j - 1);
-                }
-            }
-
-            if (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i + 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.BLACK)) {
-                    checkCaptureBlack(i + 1, j);
-                }
-            }
-        }
-
-        //Case 7: The stones are on the bottom row
-        else if((i == gameBoard.length - 1) && (j != 0) && (j != gameBoard.length - 1)) {
-            if (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i][j + 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.BLACK)) {
-                    checkCaptureBlack(i, j + 1);
-                }
-            }
-
-            if (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i][j - 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.BLACK)) {
-                    checkCaptureBlack(i, j - 1);
-                }
-            }
-
-            if (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i - 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.BLACK)) {
-                    checkCaptureBlack(i - 1, j);
-                }
-            }
-        }
-
-        //Case 8: The stones are on the right hand side
-        else if((i != 0) && (i != gameBoard.length - 1) && (j == gameBoard.length - 1)) {
-            if (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i + 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.BLACK)) {
-                    checkCaptureBlack(i + 1, j);
-                }
-            }
-
-            if (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i][j - 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.BLACK)) {
-                    checkCaptureBlack(i, j - 1);
-                }
-            }
-
-            if (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i - 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.BLACK)) {
-                    checkCaptureBlack(i - 1, j);
-                }
-            }
-        }
-
-        //Case 9: The stones have all four neighbors
-        else {
-            if (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i + 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i + 1][j].getStoneColor() == Stone.StoneColor.BLACK)) {
-                    checkCaptureBlack(i + 1, j);
-                }
-            }
-
-            if (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i][j - 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i][j - 1].getStoneColor() == Stone.StoneColor.BLACK)) {
-                    checkCaptureBlack(i, j - 1);
-                }
-            }
-
-            if (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i - 1][j].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i - 1][j].getStoneColor() == Stone.StoneColor.BLACK)) {
-                    checkCaptureBlack(i - 1, j);
-                }
-            }
-
-            if (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.NONE) {
-                hasEmptyNeighbor = true;
-                return true;
-            } else {
-                if ((gameBoard[i][j + 1].getCheckedStone() == Stone.CheckedStone.FALSE) &&
-                        (gameBoard[i][j + 1].getStoneColor() == Stone.StoneColor.BLACK)) {
-                    checkCaptureBlack(i, j + 1);
-                }
-            }
-        }
-
-        //Recursion has ended
-        return false;
     }
 
 
@@ -1051,12 +365,13 @@ public class GoGameState {
      *
      * NOTE: Done but requires testing
      */
-    public void commenceCapture(){
+    public void commenceCapture(Stone.StoneColor capCol){
         for(int i = 0; i < boardSize; i++){
             for(int j = 0; j < boardSize; j++){
-                if(gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.TRUE){
-                    gameBoard[i][j].setStoneColor(Stone.StoneColor.NONE);
-                    gameBoard[i][j].setCheckedStone(Stone.CheckedStone.FALSE);
+                if(gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.FALSE){
+                    if(gameBoard[i][j].getStoneColor() == capCol){
+                        gameBoard[i][j].setStoneColor(Stone.StoneColor.NONE);
+                    }
                 }
             }
         }
@@ -1093,18 +408,44 @@ public class GoGameState {
         //set a truth counter to zero
         int count = 0;
 
+        Stone[][] copyArray = deepCopyArray(gameBoard);
+
         //Place the new chip on the board for the given player
         if(isPlayer1){
             gameBoard[x][y].setStoneColor(Stone.StoneColor.BLACK);
+
+            for(int i = 0; i < boardSize; i++) {
+                for (int j = 0; j < boardSize; j++) {
+                    if (gameBoard[i][j].getStoneColor() == Stone.StoneColor.NONE) {
+                        if (gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.FALSE) {
+                            checkCapture(i, j, Stone.StoneColor.BLACK, Stone.StoneColor.WHITE);
+                        }
+                    }
+                }
+            }
+            commenceCapture(Stone.StoneColor.WHITE);
+            resetCapture();
         }
         else{
             gameBoard[x][y].setStoneColor(Stone.StoneColor.WHITE);
+
+            for(int i = 0; i < boardSize; i++) {
+                for (int j = 0; j < boardSize; j++) {
+                    if (gameBoard[i][j].getStoneColor() == Stone.StoneColor.NONE) {
+                        if (gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.FALSE) {
+                            checkCapture(i, j, Stone.StoneColor.WHITE, Stone.StoneColor.BLACK);
+                        }
+                    }
+                }
+            }
+            commenceCapture(Stone.StoneColor.BLACK);
+            resetCapture();
         }
 
         //Check if the boards are equal
         for(int i = 0; i < boardSize; i++){
             for(int j = 0; j < boardSize; j++){
-                if(gameBoard[i][j] != stoneCopiesFirst[i][j]){
+                if(gameBoard[i][j].getStoneColor() != stoneCopiesFirst[i][j].getStoneColor()){
                     count++;
                 }
             }
@@ -1112,25 +453,55 @@ public class GoGameState {
 
         //If they are equal reset the board and return true
         if(count == 0){
-            gameBoard[x][y].setStoneColor(Stone.StoneColor.NONE);
+            gameBoard = deepCopyArray(copyArray);
             return true;
         }
 
         //If they are not equal update the arrays
         else{
-            for(int i = 0; i < boardSize; i++){
-                for(int j = 0; j < boardSize; j++) {
-                    stoneCopiesFirst[i][j] = stoneCopiesSecond[i][j];
-                }
-            }
-            for(int i = 0; i < boardSize; i++){
-                for(int j = 0; j < boardSize; j++) {
-                    stoneCopiesSecond[i][j] = gameBoard[i][j];
-                }
-            }
-            gameBoard[x][y].setStoneColor(Stone.StoneColor.NONE);
+            stoneCopiesFirst = deepCopyArray(stoneCopiesSecond);
+            stoneCopiesSecond = deepCopyArray(gameBoard);
+
+            gameBoard = deepCopyArray(copyArray);
             return false;
         }
+    }
+
+
+    /**
+     * Creates a copy of the array
+     *
+     * @param firstArr      The array to copy
+     *
+     * @return the copied array
+     *
+     * @author Jude Gabriel
+     */
+    public Stone[][] deepCopyArray(Stone[][] firstArr){
+        Stone[][] copyArr = new Stone[boardSize][boardSize];
+        for(int i = 0; i < boardSize; i++){
+            for (int j = 0; j < boardSize; j++){
+                copyArr[i][j] = new Stone(0, 0);
+            }
+        }
+
+        for(int i = 0; i < boardSize; i++){
+            for(int j = 0; j < boardSize; j++){
+                if(firstArr[i][j] != null) {
+                    copyArr[i][j].setRadius(firstArr[i][j].getRadius());
+                    copyArr[i][j].setxLeft(firstArr[i][j].getxLeft());
+                    copyArr[i][j].setxLocation(firstArr[i][j].getxLocation());
+                    copyArr[i][j].setxRight(firstArr[i][j].getxRight());
+                    copyArr[i][j].setyBottom(firstArr[i][j].getyBottom());
+                    copyArr[i][j].setyTop(firstArr[i][j].getyTop());
+                    copyArr[i][j].setyLocation(firstArr[i][j].getyLocation());
+                    copyArr[i][j].setStoneColor(firstArr[i][j].getStoneColor());
+                    copyArr[i][j].setCheckedStone(firstArr[i][j].getCheckedStone());
+                }
+            }
+        }
+
+        return copyArr;
     }
 
 
@@ -1299,10 +670,10 @@ public class GoGameState {
                 theBoard +=("    " + i + ", " + j + " is " + gameBoard[i][j].getStoneColor());
             }
         }
-        String info = timerString + " " + playerTurn + " " + firstPlayerScore + " " + secondPlayerScore + " " + theBoard;
+        String info = timerString + " " + playerTurn + " " + firstPlayerScore + " " +
+                secondPlayerScore + " " + theBoard;
         return info;
     }
-
 
 
     /**
@@ -1391,6 +762,7 @@ public class GoGameState {
         int x = i;
         int y = j;
         int count = 0;
+        int sideBump = 0;
 
         if((x == 0) || (x == gameBoard.length - 1)){
             count++;
@@ -1405,6 +777,10 @@ public class GoGameState {
                 count++;
                 break;
             }
+            if(x == 0 && gameBoard[x][y].getStoneColor() == Stone.StoneColor.NONE){
+                sideBump++;
+                break;
+            }
             x--;
         }
 
@@ -1412,6 +788,10 @@ public class GoGameState {
         while(x <= gameBoard.length - 1){
             if (gameBoard[x][y].getStoneColor() == Stone.StoneColor.BLACK) {
                 count++;
+                break;
+            }
+            if(x == gameBoard.length - 1 && gameBoard[x][y].getStoneColor() == Stone.StoneColor.NONE){
+                sideBump++;
                 break;
             }
             x++;
@@ -1423,6 +803,10 @@ public class GoGameState {
                 count++;
                 break;
             }
+            if(y == 0 && gameBoard[x][y].getStoneColor() == Stone.StoneColor.NONE){
+                sideBump++;
+                break;
+            }
             y--;
         }
 
@@ -1432,17 +816,26 @@ public class GoGameState {
                 count++;
                 break;
             }
+            if(y == gameBoard.length - 1 && gameBoard[x][y].getStoneColor() == Stone.StoneColor.NONE){
+                sideBump++;
+                break;
+            }
             y++;
         }
 
         if(count == 4){
             return true;
         }
+        else if(sideBump == 2 && count == 2){
+            return true;
+        }
+        else if(sideBump == 1 && count == 3){
+            return true;
+        }
         else{
             return false;
         }
     }
-
 
 
     /**
@@ -1456,7 +849,7 @@ public class GoGameState {
                 if (gameBoard[i][j].getStoneColor() == Stone.StoneColor.WHITE) {
                     player2Score++;
                 }
-                if (gameBoard[i][j].getStoneColor() == Stone.StoneColor.WHITE){
+                if (gameBoard[i][j].getStoneColor() == Stone.StoneColor.BLACK){
                     calculateWhiteSurround(i - 1, j);
                     calculateWhiteSurround(i, j - 1);
                     calculateWhiteSurround(i + 1, j);
@@ -1479,11 +872,6 @@ public class GoGameState {
 
         resetCapture();
     }
-
-
-
-
-
 
 
     /**
@@ -1537,6 +925,7 @@ public class GoGameState {
         int x = i;
         int y = j;
         int count = 0;
+        int sideBump = 0;
 
         if((x == 0) || (x == gameBoard.length - 1)){
             count++;
@@ -1590,27 +979,7 @@ public class GoGameState {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /** HELPER METHODS FOR TESTING **/
-
-
     /**
      * Used to test if captures work
      *
@@ -1619,33 +988,12 @@ public class GoGameState {
      * @author Jude Gabriel
      */
     public void testCaptures(){
-        gameBoard[0][0].setStoneColor(Stone.StoneColor.BLACK);
-        gameBoard[0][1].setStoneColor(Stone.StoneColor.BLACK);
-        gameBoard[0][2].setStoneColor(Stone.StoneColor.BLACK);
-
-        gameBoard[1][0].setStoneColor(Stone.StoneColor.BLACK);
-        gameBoard[1][3].setStoneColor(Stone.StoneColor.BLACK);
-
+        gameBoard[0][3].setStoneColor(Stone.StoneColor.BLACK);
         gameBoard[2][0].setStoneColor(Stone.StoneColor.BLACK);
-        gameBoard[2][4].setStoneColor(Stone.StoneColor.BLACK);
-
-        gameBoard[3][0].setStoneColor(Stone.StoneColor.BLACK);
-        gameBoard[3][2].setStoneColor(Stone.StoneColor.BLACK);
-        gameBoard[3][3].setStoneColor(Stone.StoneColor.BLACK);
+        gameBoard[1][3].setStoneColor(Stone.StoneColor.BLACK);
+        gameBoard[2][3].setStoneColor(Stone.StoneColor.BLACK);
+        gameBoard[2][2].setStoneColor(Stone.StoneColor.BLACK);
 
 
-
-
-
-
-
-        gameBoard[1][1].setStoneColor(Stone.StoneColor.WHITE);
-        gameBoard[1][2].setStoneColor(Stone.StoneColor.WHITE);
-
-        gameBoard[2][1].setStoneColor(Stone.StoneColor.WHITE);
-        gameBoard[2][2].setStoneColor(Stone.StoneColor.WHITE);
-        gameBoard[2][3].setStoneColor(Stone.StoneColor.WHITE);
-
-        gameBoard[3][1].setStoneColor(Stone.StoneColor.WHITE);
     }
 }
