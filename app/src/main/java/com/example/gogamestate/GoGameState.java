@@ -4,29 +4,28 @@ package com.example.gogamestate;
 import android.os.CountDownTimer;
 
 public class GoGameState {
-
-
     /* GoGameState private instance variables */
-    private boolean isPlayer1;  //boolean value for which player's turn it is
-    private Stone[][] gameBoard;    //Stones array for locations on the board
-    private float userXClick;   //The x coordinate the user clicks
-    private float userYClick;   //The y coordinate the user clicks
-    private final int boardSize;  //The dimensions of the board
-    private int player1Score;   //Stores Player 1's score
-    private int player2Score;   //Stores Player 2's score
-    private int totalMoves;     //Total number of moves made in game
-    private Stone[][] stoneCopiesFirst; //Stores the board from two moves ago
-    private Stone[][] stoneCopiesSecond;    //Stores the board from one move ago
-    private  int totalTime;
-    private CountDownTimer countUpTimer;
+    private boolean isPlayer1;           //boolean value for which player's turn it is
+    private Stone[][] gameBoard;         //Stones array for locations on the board
+    private float userXClick;            //The x coordinate the user clicks
+    private float userYClick;            //The y coordinate the user clicks
+    private final int boardSize;         //The dimensions of the board
+    private int player1Score;            //Stores Player 1's score
+    private int player2Score;            //Stores Player 2's score
+    private boolean gameOver;            //Tracks whether the game is over
+    private int totalMoves;              //Total number of moves made in game
+    private Stone[][] stoneCopiesFirst;  //Stores the board from two moves ago
+    private Stone[][] stoneCopiesSecond; //Stores the board from one move ago
+    private int totalTime;               //Total time elapsed in the game
+    private CountDownTimer countUpTimer; //Timer for the game
 
-
-    /**
+    /** GoGameState
      * Constructor for the GoGameStateClass
      *
      * @author Jude Gabriel
      * @author Natalie Tashchuk
      * @author Mia Anderson
+     * @author Brynn Harrington
      */
     public GoGameState() {
         //Initialize the board size and gameBoard array
@@ -51,31 +50,41 @@ public class GoGameState {
         stoneCopiesSecond = new Stone[boardSize][boardSize];
         totalTime = 0;
 
+        //Use lambda function to redefine the timer for the game
         countUpTimer = new CountDownTimer(30000, 1000){
+            //override the onTick method
             @Override
             public void onTick(long millisUntilFinish){
                 totalTime++;
-
             }
 
+            //override the onFinish method
             @Override
             public void onFinish(){
                 countUpTimer.start();
-
             }
         };
+        //Initialize the timer
         countUpTimer.start();
-
     }
 
 
-    /**
+    /** GoGameState
      * Copy Constructor for the Go GameState
+     * Performs a deep copy of the Go GameState to counter
+     * possible cheating in the game.
+     *
      * @param gs
      *
-     * NOTE: Should be finished, requires testing
+     * @author Jude Gabriel
+     * @author Natalie Tashchuk
+     * @author Mia Anderson
+     * @author Brynn Harrington
+     *
+     * TODO: requires testing (verify with teammates)
      */
     public GoGameState(GoGameState gs){
+        //Initialize the instance variables to the current game state
         this.boardSize = gs.boardSize;
         this.userXClick = gs.userXClick;
         this.userYClick = gs.userYClick;
@@ -86,6 +95,8 @@ public class GoGameState {
         this.isPlayer1 = gs.isPlayer1;
         this.totalMoves = gs.totalMoves;
         this.totalTime = gs.totalTime;
+
+        //Initialize the timer for the deep copy of the game
         this.countUpTimer = new CountDownTimer(30000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -97,12 +108,13 @@ public class GoGameState {
                 countUpTimer.start();
             }
         };
-        countUpTimer.start();
 
+        //Initialize the counter for the game
+        countUpTimer.start();
     }
 
 
-    /**
+    /** initializeArray
      * This method initializes the array of stones
      *
      * @author Jude Gabriel
@@ -125,7 +137,7 @@ public class GoGameState {
     }
 
 
-    /**
+    /** playerMove
      * Calculate the player move and then re-change the color of the stones
      *
      * @param x     x location of the user or AI click
@@ -133,8 +145,6 @@ public class GoGameState {
      * @return true if it is a valid player move, false otherwise
      *
      * @author Jude Gabriel
-     *
-     * NOT FINISHED
      */
     public boolean playerMove(float x, float y) {
         //Find the liberty the user clicked on
@@ -142,9 +152,12 @@ public class GoGameState {
         int iIndex = indexVals[0];
         int jIndex = indexVals[1];
 
+        //If total moves is 1, copy to track board from two moves ago
         if(totalMoves == 1){
             stoneCopiesFirst = deepCopyArray(gameBoard);
         }
+
+        //If total moves is 2, copy to track board from one move ago
         if (totalMoves == 2){
             stoneCopiesSecond = deepCopyArray(gameBoard);
         }
@@ -152,8 +165,9 @@ public class GoGameState {
         //Check if the move is valid
         boolean validMove = isValidLocation(iIndex, jIndex);
 
-
+        //Player1's move
         if(isPlayer1) {
+            //placeStone(iIndex, jIndex);
             if (validMove) {
                 gameBoard[iIndex][jIndex].setStoneColor(Stone.StoneColor.BLACK);
                 for(int i = 0; i < boardSize; i++){
@@ -180,6 +194,7 @@ public class GoGameState {
             }
         }
 
+        //Player2's move
         else{
             if(validMove){
                 gameBoard[iIndex][jIndex].setStoneColor(Stone.StoneColor.WHITE);
@@ -210,8 +225,8 @@ public class GoGameState {
     }
 
 
-    /**
-     * findStone finds which index the user clicked on in the stones array
+    /** findStone
+     * Finds which index the user clicked on in the stones array
      *
      * @param x     the x location of the user click
      * @param y     the y location of the user click
@@ -249,7 +264,7 @@ public class GoGameState {
     }
 
 
-    /**
+    /** isValidLocation
      * This will check if the user places the stone in a valid position
      *
      * @return true if the user places a stone in a valid location
@@ -257,7 +272,6 @@ public class GoGameState {
      * @author Jude Gabriel
      *
      *
-     * NOTE: NOT FINISHED. NEEDS TO CHECK FOR REPEATED MOVE
      */
     public boolean isValidLocation(int iIndex, int jIndex) {
         boolean capCheck = false;
@@ -303,8 +317,52 @@ public class GoGameState {
         return true;
     }
 
+    /** placeStone
+     * A helper function that updates the board to the stone based
+     * on the current player and checks if the player is able to
+     * capture based off that move. This function assumes the location
+     * of the move is valid.
+     *
+     * @param x the x-coordinate of where the user clicked
+     * @param y the y-coordinate of where the user clicked
+     * @return whether the move was able to be made
+     *
+     * @author Brynn Harrington
+     *
+     * TODO: test whether this function works
+     *
+     * */
+    public void placeStone(int x, int y) {
+        //Initialize a variable to store the stone color of current player
+        //and the opponent's stone color
+        Stone.StoneColor stoneColor, oppStoneColor;
+        if (isPlayer1) {
+            stoneColor = Stone.StoneColor.BLACK;
+            oppStoneColor = Stone.StoneColor.WHITE;
+        }
+        else {
+            stoneColor = Stone.StoneColor.WHITE;
+            oppStoneColor = Stone.StoneColor.BLACK;
+        }
+        //Set the liberty to the current player's color
+        gameBoard[x][y].setStoneColor(stoneColor);
 
-    /**
+        //Iterate through the board and determine whether they player can capture
+        for(int i = 0; i < boardSize; i++){
+            for(int j = 0; j < boardSize; j++){
+                //Check if current position is empty
+                if(gameBoard[i][j].getStoneColor() == Stone.StoneColor.NONE){
+                    //Verify this position has not been checked for a capture already
+                    if(gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.FALSE){
+                        //Check if the player can capture from this position
+                        checkCapture(i, j, stoneColor, oppStoneColor);
+                    }
+                }
+            }
+        }
+    }
+
+    /** selfCapture
      * Checks if a stone can capture itself
      * @param x     i index of stone
      * @param y     j index of stone
@@ -337,7 +395,7 @@ public class GoGameState {
     }
 
 
-    /**
+    /** checkCapture
      * Checks for captured stones
      *
      * @param i     i index of the stone
