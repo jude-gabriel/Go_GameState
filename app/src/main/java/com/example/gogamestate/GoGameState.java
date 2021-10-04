@@ -7,17 +7,18 @@ public class GoGameState {
     /* GoGameState private instance variables */
     private boolean isPlayer1;           //boolean value for which player's turn it is
     private Stone[][] gameBoard;         //Stones array for locations on the board
-    private float userXClick;            //The x coordinate the user clicks
-    private float userYClick;            //The y coordinate the user clicks
+    private final float userXClick;            //The x coordinate the user clicks
+    private final float userYClick;            //The y coordinate the user clicks
     private final int boardSize;         //The dimensions of the board
     private int player1Score;            //Stores Player 1's score
     private int player2Score;            //Stores Player 2's score
     private boolean gameOver;            //Tracks whether the game is over
+    private final CountDownTimer countUpTimer; //Timer for the game
     private int totalMoves;              //Total number of moves made in game
     private Stone[][] stoneCopiesFirst;  //Stores the board from two moves ago
     private Stone[][] stoneCopiesSecond; //Stores the board from one move ago
     private int totalTime;               //Total time elapsed in the game
-    private CountDownTimer countUpTimer; //Timer for the game
+    private int numSkips;                //Tracks whether two consecutive skips
 
     /** GoGameState
      * Constructor for the GoGameStateClass
@@ -45,13 +46,17 @@ public class GoGameState {
         player2Score = 0;
         totalMoves = 0;
 
+        //Initialize game over to false and number of skips to zero
+        gameOver = false;
+        numSkips = 0;
+
         //Initialize the arrays that store former board positions
         stoneCopiesFirst = new Stone[boardSize][boardSize];
         stoneCopiesSecond = new Stone[boardSize][boardSize];
         totalTime = 0;
 
         //Use lambda function to redefine the timer for the game
-        countUpTimer = new CountDownTimer(30000, 1000){
+        countUpTimer = new CountDownTimer(30000, 1000) {
             //override the onTick method
             @Override
             public void onTick(long millisUntilFinish){
@@ -69,21 +74,21 @@ public class GoGameState {
     }
 
 
-    /** GoGameState
+    /**
+     * GoGameState
      * Copy Constructor for the Go GameState
      * Performs a deep copy of the Go GameState to counter
      * possible cheating in the game.
      *
-     * @param gs
-     *
+     * @param gs - the game state to copy
      * @author Jude Gabriel
      * @author Natalie Tashchuk
      * @author Mia Anderson
      * @author Brynn Harrington
-     *
+     * <p>
      * TODO: requires testing (verify with teammates)
      */
-    public GoGameState(GoGameState gs){
+    public GoGameState(GoGameState gs) {
         //Initialize the instance variables to the current game state
         this.boardSize = gs.boardSize;
         this.userXClick = gs.userXClick;
@@ -92,6 +97,8 @@ public class GoGameState {
         this.gameBoard = gs.gameBoard;
         this.player1Score = gs.player1Score;
         this.player2Score = gs.player2Score;
+        this.gameOver = gs.gameOver;
+        this.numSkips = gs.numSkips;
         this.isPlayer1 = gs.isPlayer1;
         this.totalMoves = gs.totalMoves;
         this.totalTime = gs.totalTime;
@@ -187,11 +194,9 @@ public class GoGameState {
                 totalMoves++;
                 player1Score += calculateScore(Stone.StoneColor.BLACK, Stone.StoneColor.WHITE);
                 player2Score += calculateScore(Stone.StoneColor.WHITE, Stone.StoneColor.BLACK);
+                numSkips = 0;
                 return true;
                 }
-            else{
-                return false;
-            }
         }
 
         //Player2's move
@@ -215,13 +220,13 @@ public class GoGameState {
                 totalMoves++;
                 player1Score += calculateScore(Stone.StoneColor.BLACK, Stone.StoneColor.WHITE);
                 player2Score += calculateScore(Stone.StoneColor.WHITE, Stone.StoneColor.BLACK);
+                numSkips = 0;
                 return true;
             }
-            else{
-
-                return false;
-            }
         }
+
+        // otherwise return false
+        return false;
     }
 
 
@@ -325,7 +330,6 @@ public class GoGameState {
      *
      * @param x the x-coordinate of where the user clicked
      * @param y the y-coordinate of where the user clicked
-     * @return whether the move was able to be made
      *
      * @author Brynn Harrington
      *
@@ -374,24 +378,25 @@ public class GoGameState {
      * @author Jude Gabriel
      */
     public boolean selfCapture(int x, int y, Stone.StoneColor checkCol, Stone.StoneColor capCol){
+        //Iterate through the board
         for(int i = 0; i < boardSize; i++){
             for(int j = 0; j < boardSize; j++){
+                //Determine if the liberty is empty
                 if(gameBoard[i][j].getStoneColor() == Stone.StoneColor.NONE){
-                    if(gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.FALSE){
+                    //Determine if stone was already checked
+                    if(gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.FALSE) {
+                        //Determine if capture possible
                         checkCapture(i, j, checkCol, capCol);
                     }
                 }
             }
         }
+        //If able to capture, capture the stone and reset it
         commenceCapture(capCol);
         resetCapture();
 
-        if(gameBoard[x][y].getStoneColor() == capCol){
-            return false;
-        }
-        else{
-            return true;
-        }
+        //Return whether the stone liberty would capture itself
+        return gameBoard[x][y].getStoneColor() != capCol;
     }
 
 
@@ -404,44 +409,47 @@ public class GoGameState {
      * @param capCol    Color of captured stones
      *
      * @author Jude Gabriel
+     * @modified Brynn Harrington
      */
-    public void checkCapture(int i, int j, Stone.StoneColor checkCol, Stone.StoneColor capCol){
-        if(i < 0 || j < 0 || i > gameBoard.length - 1 || j > gameBoard.length - 1){
+    public void checkCapture(int i, int j, Stone.StoneColor checkCol, Stone.StoneColor capCol) {
+        //TODO: determine if this can be replaced with isValidLocation method
+
+        //Verify the location is valid, the stone has not been checked. and the stone color
+        //is not what is being checked
+        if (i < 0 || j < 0 || i > gameBoard.length - 1 || j > gameBoard.length - 1
+                || gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.TRUE
+                || gameBoard[i][j].getStoneColor() == checkCol) {
             return;
         }
-        if(gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.TRUE){
-            return;
-        }
-        if(gameBoard[i][j].getStoneColor() == checkCol){
-            return;
-        }
-        else{
-            if(gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.FALSE){
-                gameBoard[i][j].setCheckedStone(Stone.CheckedStone.TRUE);
-                checkCapture(i + 1, j, checkCol, capCol);
-                checkCapture(i - 1, j, checkCol, capCol);
-                checkCapture(i, j + 1, checkCol, capCol);
-                checkCapture(i, j - 1, checkCol, capCol);
-            }
-            else{
-                return;
-            }
+
+        //If the stone has not been checked yet, check if capture possible
+        if (gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.FALSE) {
+            //Set the checked to true
+            gameBoard[i][j].setCheckedStone(Stone.CheckedStone.TRUE);
+            //Check around to determine if able to capture
+            checkCapture(i + 1, j, checkCol, capCol);
+            checkCapture(i - 1, j, checkCol, capCol);
+            checkCapture(i, j + 1, checkCol, capCol);
+            checkCapture(i, j - 1, checkCol, capCol);
         }
     }
 
 
-    /**
+    /** commerceCapture
      * This method finds which stones can be captured and captures them
      *
      * @author Jude Gabriel
      *
-     * NOTE: Done but requires testing
+     * TODO: Testing
      */
     public void commenceCapture(Stone.StoneColor capCol){
+        //Iterate through the board
         for(int i = 0; i < boardSize; i++){
-            for(int j = 0; j < boardSize; j++){
-                if(gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.FALSE){
-                    if(gameBoard[i][j].getStoneColor() == capCol){
+            for(int j = 0; j < boardSize; j++) {
+                //If the stone hasn't been checked and the color is the capture color,
+                //capture the stone
+                if (gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.FALSE) {
+                    if (gameBoard[i][j].getStoneColor() == capCol) {
                         gameBoard[i][j].setStoneColor(Stone.StoneColor.NONE);
                     }
                 }
@@ -450,14 +458,15 @@ public class GoGameState {
     }
 
 
-    /**
+    /** resetCapture
      * If captures are not possible, reset checked stone values
      *
      * @author Jude Gabriel
      *
-     * NOTE: Requires testing
+     * TODO: Testing
      */
     public void resetCapture(){
+        //Iterate through the board and reset checked stone to false
         for(int i = 0; i < boardSize; i++){
             for(int j = 0; j < boardSize; j++){
                 gameBoard[i][j].setCheckedStone(Stone.CheckedStone.FALSE);
@@ -466,58 +475,68 @@ public class GoGameState {
     }
 
 
-    /**
+    /** checkRepeatedPosition
      * Checks if the user recreated a previous position on the board
-     * @param x
-     * @param y
+     *
+     * @param x - the x-coordinate of where the user clicked
+     * @param y - the y-coordinate of where the user clicked
      * @return true if the board position is repeated
      *
      * @author Jude Gabriel
      *
-     * NOTE: Might be fnished.... needs testing
+     * TODO: Testing
      */
     public boolean checkRepeatedPosition(int x, int y){
-        //set a truth counter to zero
+        //Set a truth counter to zero
         int count = 0;
 
+        //Create a deep copy of the copy array
         Stone[][] copyArray = deepCopyArray(gameBoard);
 
         //Place the new chip on the board for the given player
         if(isPlayer1){
             gameBoard[x][y].setStoneColor(Stone.StoneColor.BLACK);
 
+            //Iterate through the board
             for(int i = 0; i < boardSize; i++) {
                 for (int j = 0; j < boardSize; j++) {
+                    //Verify liberty is empty and the stone has not been checked
+                    // TODO: create helper function since this line of code is used often
                     if (gameBoard[i][j].getStoneColor() == Stone.StoneColor.NONE) {
                         if (gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.FALSE) {
+                            //Check if able to capture
                             checkCapture(i, j, Stone.StoneColor.BLACK, Stone.StoneColor.WHITE);
                         }
                     }
                 }
             }
+            //Capture the stone is able to
             commenceCapture(Stone.StoneColor.WHITE);
-            resetCapture();
         }
         else{
             gameBoard[x][y].setStoneColor(Stone.StoneColor.WHITE);
 
+            //Iterate through the board
             for(int i = 0; i < boardSize; i++) {
                 for (int j = 0; j < boardSize; j++) {
+                    //Verify liberty is empty and the stone has not been checked
                     if (gameBoard[i][j].getStoneColor() == Stone.StoneColor.NONE) {
                         if (gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.FALSE) {
+                            //Check if able to capture
                             checkCapture(i, j, Stone.StoneColor.WHITE, Stone.StoneColor.BLACK);
                         }
                     }
                 }
             }
+            //Capture stone if able to
             commenceCapture(Stone.StoneColor.BLACK);
-            resetCapture();
         }
+        resetCapture();
 
         //Check if the boards are equal
-        for(int i = 0; i < boardSize; i++){
-            for(int j = 0; j < boardSize; j++){
-                if(gameBoard[i][j].getStoneColor() != stoneCopiesFirst[i][j].getStoneColor()){
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
+                if (gameBoard[i][j].getStoneColor() != stoneCopiesFirst[i][j].getStoneColor()) {
                     count++;
                 }
             }
@@ -540,26 +559,30 @@ public class GoGameState {
     }
 
 
-    /**
+    /** deepCopyArray
      * Creates a copy of the array
      *
-     * @param firstArr      The array to copy
+     * @param firstArr The array to copy
      *
      * @return the copied array
      *
      * @author Jude Gabriel
      */
-    public Stone[][] deepCopyArray(Stone[][] firstArr){
+    public Stone[][] deepCopyArray(Stone[][] firstArr) {
+        //Create a new copy array
         Stone[][] copyArr = new Stone[boardSize][boardSize];
-        for(int i = 0; i < boardSize; i++){
-            for (int j = 0; j < boardSize; j++){
+
+        //Iterate through the current board size and create empty board
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
                 copyArr[i][j] = new Stone(0, 0);
             }
         }
 
-        for(int i = 0; i < boardSize; i++){
-            for(int j = 0; j < boardSize; j++){
-                if(firstArr[i][j] != null) {
+        //Iterate through the board and perform a deep copy of current board
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
+                if (firstArr[i][j] != null) {
                     copyArr[i][j].setRadius(firstArr[i][j].getRadius());
                     copyArr[i][j].setxLeft(firstArr[i][j].getxLeft());
                     copyArr[i][j].setxLocation(firstArr[i][j].getxLocation());
@@ -573,45 +596,53 @@ public class GoGameState {
             }
         }
 
+        //Return the new array
         return copyArr;
     }
 
 
-    /**
+    /** skipTurn
      * Allows the user to skip a turn by changing the player turn value
      *
      * @return true once the player swap has happened
      *
      * @author Jude Gabriel
      *
-     * NOTE: Requires testing
+     * TODO: Requires testing - need to track if each player passed
+     * TODO: add new variable that tracks if to consecutive passes
      */
     public boolean skipTurn() {
+        //Reset the current player to the opponent
         isPlayer1 = !isPlayer1;
+        //Increment number of skips
+        numSkips++;
+        //If number of skips is two, the game is over
+        if (numSkips == 2) gameOver = true;
         return true;
     }
 
 
-    /**
+    /** forfeit
      * Allows the user to forfeit the game
      *
      * @return true if player 1 forfeits and false if player 2 does
      *
      * @author Jude Gabriel
      *
-     * NOTE: Requires testing
+     * TODO: Testing - NEED TO VERIFY WORKS FOR HUMAN V. HUMAN
+     *
      */
     public boolean forfeit(){
+        //Check it is player 1's turn and sets gameOver to true
         if(isPlayer1){
+            gameOver = true;
             return true;
         }
-        else{
-            return false;
-        }
+        return false;
     }
 
 
-    /**
+    /** playDumbAI
      * Allows the user to end the game and play the dumb AI
      *
      * @return true when the player selects to play the dumb AI on
@@ -619,20 +650,19 @@ public class GoGameState {
      *
      * @author Jude Gabriel
      *
-     * NOTE: Requires testing
+     * TODO: Requires testing
      */
     public boolean playDumbAI(){
+        //Checks if player 1 forfeits and plays the dumb AI
         if(isPlayer1){
             forfeit();
             return true;
         }
-        else{
-            return false;
-        }
+        return false;
     }
 
 
-    /**
+    /** playSmartAI
      * Allows the user to end the game and play the smart AI
      *
      * @return true when the player selects to play the smart AI on
@@ -640,77 +670,67 @@ public class GoGameState {
      *
      * @author Jude Gabriel
      *
-     * NOTE: Requires testing
+     * TODO: Requires testing
      */
     public boolean playSmartAI(){
+        //Checks if player 1 forfeits and plays the smart AI
         if(isPlayer1){
             forfeit();
             return true;
         }
-        else{
-            return false;
-        }
+        return false;
     }
 
 
-    /**
+    /** play2Player
      * Allows the user to end the current game and play a 2-player game
      *
      * @return true when the player selects to play a 2-player game on their turn
      *
      * @author Jude Gabriel
      *
-     * NOTE: Requires testing
+     * TODO: Requires testing
      */
     public boolean play2Player(){
+        //Checks if player 1 forfeits and plays another human
         if(isPlayer1){
             forfeit();
             return true;
         }
-        else{
-            return false;
-        }
+        return false;
     }
 
 
-    /**
+    /** quitGame
      * Allows user to exit the application on their turn
      *
      * @return true when the player selects to quit the game on their turn
      *
      * @author Jude Gabriel
      *
-     * NOTE: Requires testing
+     * TODO: Requires testing
      */
-    public boolean quitGame(){
-        if(isPlayer1){
-            return true;
-        }
-        else{
-            return false;
-        }
+    public boolean quitGame() {
+        //Checks if player 1 quits the game
+        return isPlayer1;
     }
 
 
-    /**
+    /** networkPlay
      * Allows the user to start a network game on their turn
      *
      * @return true when the player selects to play a network game on their turn
      *
      * @author Jude Gabriel
      *
-     * NOTE: Requires testing
+     * TODO: Requires testing
      */
-    public boolean networkPlay(){
-        if(isPlayer1){
-            return true;
-        }
-        else{
-            return false;
-        }
+    public boolean networkPlay() {
+        //Checks if player 1 is playing network play
+        return isPlayer1;
     }
 
-    /**
+    /** toString
      * Turns all relevant game information into a string
      *
      * @return the string of game info
@@ -720,97 +740,100 @@ public class GoGameState {
      */
     @Override
     public String toString(){
+        //Convert the player's scores to a string
         String firstPlayerScore = "Player 1 Score: " + player1Score;
         String secondPlayerScore = "Player 2 Score: " + player2Score;
 
+        //Calculate the time elapsed
         int minutes = totalTime / 60;
         int seconds = totalTime - (minutes * 60);
 
+        //Convert calculations to a string
         String timerString = "Time:" + minutes + ":" + seconds;
 
+        //Display which player's turn it is
         String playerTurn;
         if(isPlayer1){
             playerTurn = "Player 1's turn.";
-        }
-        else{
+        } else {
             playerTurn = "Player 2's turn.";
         }
 
+        //Convert the board information to a string
         String theBoard = "";
-        for(int i = 0; i < boardSize; i++){
-            for(int j = 0; j < boardSize; j++){
-                theBoard +=("    " + i + ", " + j + " is " + gameBoard[i][j].getStoneColor());
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
+                theBoard += ("    " + i + ", " + j + " is " + gameBoard[i][j].getStoneColor());
             }
         }
-        String info = timerString + " " + playerTurn + " " + firstPlayerScore + " " +
+
+        //Convert all information and return that string
+        return timerString + " " + playerTurn + " " + firstPlayerScore + " " +
                 secondPlayerScore + " " + theBoard;
-        return info;
     }
 
 
-
-
-
-
-
-
-
-
-
-
-    public int calculateScore(Stone.StoneColor colorToScore, Stone.StoneColor otherColor){
+    /**
+     * calculateScore
+     * Calculates the current score
+     *
+     * @return totalScore - the total score for the player
+     * @author Jude Gabriel
+     * @author Mia Anderson
+     * @author Natalie Taschuck
+     * @author Brynn Harrington
+     */
+    public int calculateScore(Stone.StoneColor colorToScore, Stone.StoneColor otherColor) {
+        //Initialize the total score to zero
         int totalScore = 0;
 
-        for(int i = 0; i < boardSize; i++){
-            for(int j = 0; j < boardSize; j++){
-                if(gameBoard[i][j].getStoneColor() == otherColor){
+        //Iterate through the board
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
+                //See if there are empty liberties surrounding
+                if (gameBoard[i][j].getStoneColor() == otherColor) {
                     checkCapture(i, j, colorToScore, otherColor);
                 }
-            }
-        }
-
-        for(int i = 0; i < boardSize; i++){
-            for(int j = 0; j < boardSize; j++){
-                if(gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.FALSE){
+                //If empty liberties, add to current score
+                if (gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.FALSE) {
                     totalScore++;
                 }
             }
         }
 
+        // commented out for testing purposes
+/*        for(int i = 0; i < boardSize; i++){
+            for(int j = 0; j < boardSize; j++){
+                if(gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.FALSE){
+                    totalScore++;
+                }
+            }
+        }*/
 
+        //Reset the capture
         resetCapture();
 
-
+        //Return the total Score
         return totalScore;
     }
 
 
+    /*** HELPER METHODS FOR TESTING ***/
+    //TODO: ADD MORE TESTS @Brynn
 
-
-
-
-
-
-
-
-
-
-
-    /** HELPER METHODS FOR TESTING **/
     /**
      * Used to test if captures work
-     *
+     * <p>
      * Remove later
      *
      * @author Jude Gabriel
      */
-    public void testCaptures(){
+    public void testCaptures() {
         gameBoard[0][3].setStoneColor(Stone.StoneColor.BLACK);
         gameBoard[2][0].setStoneColor(Stone.StoneColor.BLACK);
         gameBoard[1][3].setStoneColor(Stone.StoneColor.BLACK);
         gameBoard[2][3].setStoneColor(Stone.StoneColor.BLACK);
         gameBoard[2][2].setStoneColor(Stone.StoneColor.BLACK);
-
 
     }
 }
