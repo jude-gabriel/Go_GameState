@@ -39,7 +39,7 @@ public class GoGameState {
 
         //Initialize the float values of the user's click
         userXClick = -1;
-        userXClick = -1;
+        userYClick = -1;
 
         //Initialize the players scores and total number of moves
         player1Score = 0;
@@ -49,6 +49,7 @@ public class GoGameState {
         //Initialize the arrays that store former board positions
         stoneCopiesFirst = new Stone[boardSize][boardSize];
         stoneCopiesSecond = new Stone[boardSize][boardSize];
+        totalTime = 0;
 
         countUpTimer = new CountDownTimer(30000, 1000){
             @Override
@@ -84,6 +85,19 @@ public class GoGameState {
         this.player2Score = gs.player2Score;
         this.isPlayer1 = gs.isPlayer1;
         this.totalMoves = gs.totalMoves;
+        this.totalTime = gs.totalTime;
+        this.countUpTimer = new CountDownTimer(30000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                totalTime++;
+            }
+
+            @Override
+            public void onFinish() {
+                countUpTimer.start();
+            }
+        };
+        countUpTimer.start();
 
     }
 
@@ -688,6 +702,25 @@ public class GoGameState {
 
     public int calculateScore(Stone.StoneColor colorToScore, Stone.StoneColor otherColor){
         int totalScore = 0;
+
+        for(int i = 0; i < boardSize; i++){
+            for(int j = 0; j < boardSize; j++){
+                if(gameBoard[i][j].getStoneColor() == otherColor){
+                    checkCapture(i, j, colorToScore, otherColor);
+                }
+            }
+        }
+
+        for(int i = 0; i < boardSize; i++){
+            for(int j = 0; j < boardSize; j++){
+                if(gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.FALSE){
+                    totalScore++;
+                }
+            }
+        }
+
+
+        resetCapture();
 
 
         return totalScore;
