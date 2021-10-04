@@ -21,12 +21,13 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        MainActivity main = new MainActivity();
 
         gameState = new GoGameState();
 
-        TextView theText = (TextView) findViewById(R.id.infoText);
+        TextView theText = findViewById(R.id.infoText);
 
-        Button runTest = (Button) findViewById(R.id.runTest);
+        Button runTest = findViewById(R.id.runTest);
         runTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
