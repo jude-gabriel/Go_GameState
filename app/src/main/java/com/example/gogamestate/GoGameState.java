@@ -690,16 +690,16 @@ public class GoGameState {
     }
 
 
-
-
-
-
-
-
-
-
-
-
+    /**
+     *
+     *
+     * @param colorToScore
+     * @param otherColor
+     * @return
+     *
+     * @author Mia Anderson
+     * @author Jude Gabriel
+     */
     public int calculateScore(Stone.StoneColor colorToScore, Stone.StoneColor otherColor){
         int totalScore = 0;
 
