@@ -738,8 +738,6 @@ public class GoGameState {
 
 
 
-
-
     /** HELPER METHODS FOR TESTING **/
     /**
      * Used to test if captures work
