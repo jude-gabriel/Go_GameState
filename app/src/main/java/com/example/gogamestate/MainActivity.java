@@ -41,13 +41,26 @@ public class MainActivity extends AppCompatActivity{
         // override the seekbar to perform each test
         // @author Brynn Harrington
         tests.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            // initialize variable to track the progress
+            int p = -1;
+
             @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                int prog = seekBar.getProgress();
-                switch (prog) {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
+                // set the progress to the current progress
+                p = progress;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                // once stop sliding, display test results
+                switch (p) {
                     // Capture Test
                     // @author Jude Gabriel
-                    case 0:
+                    case 1:
                         if (gameState != null) {
                             //Initialize the empty board
                             if (counter == 0) {
@@ -76,22 +89,20 @@ public class MainActivity extends AppCompatActivity{
                         }
                         break;
                     // Forfeit Test
-                    case 1:
-                        //Call the forfeit test function
-                        gameState.testForfeit();
-                        theText.setText(gameState.toString());
-                        break;
                     case 2:
+                        //Call the forfeit test function
+                        if (gameState != null) {
+                            gameState.testForfeit();
+                            theText.setText(gameState.toString());
+                        }
+                        break;
+                    // Dummy code to verify working
+                    case 3:
+                        if (gameState != null) {
+                            theText.setText("test");
+                        } else theText.setText("test2");
                         break;
                 }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
 
