@@ -799,21 +799,18 @@ public class GoGameState {
                 if (gameBoard[i][j].getStoneColor() == otherColor) {
                     checkCapture(i, j, colorToScore, otherColor);
                 }
+            }
+        }
+
+        // commented out for testing purposes
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
                 //If empty liberties, add to current score
                 if (gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.FALSE) {
                     totalScore++;
                 }
             }
         }
-
-        // commented out for testing purposes
-/*        for(int i = 0; i < boardSize; i++){
-            for(int j = 0; j < boardSize; j++){
-                if(gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.FALSE){
-                    totalScore++;
-                }
-            }
-        }*/
 
         //Reset the capture
         resetCapture();
