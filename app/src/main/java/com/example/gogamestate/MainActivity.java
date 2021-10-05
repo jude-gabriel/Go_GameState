@@ -8,6 +8,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+/* ERRORS
+ * TODO: issue with scoring and resting the score
+ */
 public class MainActivity extends AppCompatActivity{
 
     public int counter = 0;
@@ -75,30 +78,9 @@ public class MainActivity extends AppCompatActivity{
         forfeit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Initialize the empty board
-                if (counter == 0) {
-                    theText.setText(gameState.toString());
-                }
-
-                //Prepopulate with stones
-                if (counter == 1) {
-                    gameState.testCaptures();
-                    theText.setText(gameState.toString());
-                }
-
-                if (counter == 2) {
-                    boolean move = gameState.playerMove(600, 750);
-                    theText.setText(gameState.toString());
-                }
-                if (counter == 3) {
-                    boolean move = gameState.playerMove(600, 400);
-                    theText.setText(gameState.toString());
-                }
-
-                // attempt to forfeit
-                if (gameState.forfeit()) return;
-
-                counter++;
+                //Call the forfeit test function
+                gameState.testForfeit();
+                theText.setText(gameState.toString());
             }
         });
     }

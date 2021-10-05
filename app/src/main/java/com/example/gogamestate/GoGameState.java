@@ -762,10 +762,15 @@ public class GoGameState {
         //Convert the board information to a string
         String theBoard = "";
         for (int i = 0; i < boardSize; i++) {
+            theBoard += "\n";
             for (int j = 0; j < boardSize; j++) {
-                theBoard += ("    " + i + ", " + j + " is " + gameBoard[i][j].getStoneColor());
+                theBoard += ("\t" + i + ", " + j + " is " + gameBoard[i][j].getStoneColor());
             }
         }
+
+        //If game is over, only display that score
+        if (gameOver) return timerString + " " + playerTurn + " " + firstPlayerScore + " " +
+                secondPlayerScore + theBoard + " \nGAME OVER";
 
         //Convert all information and return that string
         return timerString + " " + playerTurn + " " + firstPlayerScore + " " +
@@ -842,8 +847,17 @@ public class GoGameState {
      * @author Brynn Harrington
      */
     public void testForfeit() {
+        // dummy values for the board
         gameBoard[0][3].setStoneColor(Stone.StoneColor.BLACK);
         gameBoard[2][0].setStoneColor(Stone.StoneColor.BLACK);
-        gameBoard[1][3].setStoneColor(Stone.StoneColor.BLACK);
+        gameBoard[1][3].setStoneColor(Stone.StoneColor.WHITE);
+        gameBoard[0][0].setStoneColor(Stone.StoneColor.WHITE);
+
+        // calculate the current score
+        //this.calculateScore(Stone.StoneColor.BLACK, Stone.StoneColor.WHITE);
+        //this.calculateScore(Stone.StoneColor.WHITE, Stone.StoneColor.BLACK);
+
+        // forfeit
+        this.forfeit();
     }
 }
