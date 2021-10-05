@@ -10,6 +10,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 /* ERRORS
+ * TODO - when game finishes, needs to set the game state to null
  */
 public class MainActivity extends AppCompatActivity{
 
@@ -99,8 +100,8 @@ public class MainActivity extends AppCompatActivity{
                     // Dummy code to verify working
                     case 3:
                         if (gameState != null) {
-                            theText.setText("test");
-                        } else theText.setText("test2");
+                            theText.setText(R.string.test);
+                        } else theText.setText(R.string.test2);
                         break;
                 }
             }

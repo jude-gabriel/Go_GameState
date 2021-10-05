@@ -3,4 +3,6 @@
     <string name="run_test">Run Test</string>
     <string name="our_test_will_go_here">Our test will go here</string>
     <string name="forfeit_test">Forfeit Test</string>
+    <string name="test2">test2</string>
+    <string name="test">test</string>
 </resources>
