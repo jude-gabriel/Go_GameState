@@ -822,9 +822,8 @@ public class GoGameState {
     //TODO: ADD MORE TESTS @Brynn
 
     /**
-     * Used to test if captures work
-     * <p>
-     * Remove later
+     * testCaptures
+     * Used to test if captures works
      *
      * @author Jude Gabriel
      */
@@ -834,6 +833,17 @@ public class GoGameState {
         gameBoard[1][3].setStoneColor(Stone.StoneColor.BLACK);
         gameBoard[2][3].setStoneColor(Stone.StoneColor.BLACK);
         gameBoard[2][2].setStoneColor(Stone.StoneColor.BLACK);
+    }
 
+    /**
+     * testForfeit
+     * Used to test if forfeit works
+     *
+     * @author Brynn Harrington
+     */
+    public void testForfeit() {
+        gameBoard[0][3].setStoneColor(Stone.StoneColor.BLACK);
+        gameBoard[2][0].setStoneColor(Stone.StoneColor.BLACK);
+        gameBoard[1][3].setStoneColor(Stone.StoneColor.BLACK);
     }
 }

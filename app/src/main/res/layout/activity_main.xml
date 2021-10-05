@@ -9,16 +9,28 @@
     <LinearLayout
         android:id="@+id/buttonLayout"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginStart="25dp"
-        android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="parent">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="43dp"
+        android:layout_marginBottom="635dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/textLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <Button
             android:id="@+id/runTest"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Run Test" />
+            android:text="@string/run_test" />
+
+        <Button
+            android:id="@+id/forfeitTest"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="@string/forfeit_test" />
 
     </LinearLayout>
 
@@ -34,10 +46,10 @@
 
         <TextView
             android:id="@+id/infoText"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Our test will go here" />
+            android:text="@string/our_test_will_go_here" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

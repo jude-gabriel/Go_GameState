@@ -21,20 +21,28 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // initialize a new main activity object
         MainActivity main = new MainActivity();
 
+        // initialize a new game state
         gameState = new GoGameState();
 
+        // display the information test
         TextView theText = findViewById(R.id.infoText);
 
+        // initialize objects for the buttons to test
         Button runTest = findViewById(R.id.runTest);
+        Button forfeit = findViewById(R.id.forfeitTest);
+
+        // override the run test
+        // @author Jude Gabriel
         runTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(gameState != null) {
+                if (gameState != null) {
 
                     //Initialize the empty board
-                    if(counter == 0){
+                    if (counter == 0) {
                         theText.setText(gameState.toString());
                     }
 
@@ -52,13 +60,45 @@ public class MainActivity extends AppCompatActivity{
                         boolean move = gameState.playerMove(600, 400);
                         theText.setText(gameState.toString());
                     }
-                    if(counter == 4) {
+                    if (counter == 4) {
                         boolean move = gameState.playerMove(950, 400);
                         theText.setText(gameState.toString());
                     }
 
                     counter++;
                 }
+            }
+        });
+
+        // test forfeiting
+        // @author Brynn Harrington
+        forfeit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Initialize the empty board
+                if (counter == 0) {
+                    theText.setText(gameState.toString());
+                }
+
+                //Prepopulate with stones
+                if (counter == 1) {
+                    gameState.testCaptures();
+                    theText.setText(gameState.toString());
+                }
+
+                if (counter == 2) {
+                    boolean move = gameState.playerMove(600, 750);
+                    theText.setText(gameState.toString());
+                }
+                if (counter == 3) {
+                    boolean move = gameState.playerMove(600, 400);
+                    theText.setText(gameState.toString());
+                }
+
+                // attempt to forfeit
+                if (gameState.forfeit()) return;
+
+                counter++;
             }
         });
     }
