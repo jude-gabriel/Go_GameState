@@ -201,6 +201,9 @@ public class GoGameState {
 
             //Increment number of moves
             totalMoves++;
+
+            //Return true since valid move was made
+            return true;
         }
 
      /*   //Player1's move
