@@ -41,10 +41,12 @@ public class MainActivity extends AppCompatActivity{
 
         // initialize objects for the buttons to test
         Button runTest = findViewById(R.id.runTest);
-        Button forfeit = findViewById(R.id.forfeitTest);
 
-        // override the run test for click
-        // @author Jude Gabriel
+        /** ClickOnListener
+         * Override the run test for click using a lambda function
+         * @author Jude Gabriel
+         * @author Brynn Harrington
+         */
         runTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -52,6 +54,49 @@ public class MainActivity extends AppCompatActivity{
 
                     //Modified to make a string resource
                     theText.setText(R.string.runTestsString);
+                    //Utilize a switch on counter for tests
+                    switch (counter) {
+                        //Test capturing
+                        case 0:
+                            //Initialize the empty board
+                            theText.setText(firstInstance.toString());
+                            CharSequence secondInst = secondInstance.toString();
+                            theText.append(secondInst);
+                            counter++;
+                            break;
+
+                        //Populate the board with one stone away from capturing
+                        case 1:
+                            firstInstance.testCaptures();
+                            CharSequence firstinst = firstInstance.toString();
+                            theText.append((CharSequence) secondInstance.toString());
+                            counter++;
+                            break;
+
+                        //MAKE MOVES
+                        case 2:
+                            counter++;
+                            break;
+
+                        //MAKE MOVES
+                        case 3:
+                            counter++;
+                            break;
+
+                        //MAKE MOVES
+                        case 4:
+                            //Update the text for each instance
+                            theText.append((CharSequence) firstInstance.toString());
+                            theText.append((CharSequence) secondInstance.toString());
+                            theText.append((CharSequence) thirdInstance.toString());
+                            counter++;
+                            break;
+                        //Test forfeiting
+                        case 5:
+                            firstInstance.testForfeit();
+                            counter++;
+                    }
+
 
                     //Initialize the empty board
                     if (counter == 0) {
@@ -70,7 +115,7 @@ public class MainActivity extends AppCompatActivity{
                     if(counter == 2) {
                         //MAKE MOVES
                     }
-                    if(counter == 3) {
+                    if (counter == 3) {
                         //MAKE MOVES
                     }
                     if (counter == 4) {
@@ -79,6 +124,8 @@ public class MainActivity extends AppCompatActivity{
                         theText.append((CharSequence) secondInstance.toString());
                         theText.append((CharSequence) thirdInstance.toString());
                     }
+                    //Test Forfeiting
+                    //if (counter)
                     counter++;
                 }
             }
