@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity{
                     if(counter == 1){
                         firstInstance.testCaptures();
                         CharSequence firstinst = firstInstance.toString();
+                        theText.append((CharSequence) secondInstance.toString());
                     }
 
                     if(counter == 2) {
