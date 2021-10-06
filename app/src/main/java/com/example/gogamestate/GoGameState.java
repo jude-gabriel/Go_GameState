@@ -821,7 +821,7 @@ public class GoGameState {
 
 
     /*** HELPER METHODS FOR TESTING ***/
-    //TODO: ADD MORE TESTS @Brynn
+    //TODO: ADD MORE TESTS FOR SMART AND DUMB AI
 
     /**
      * testCaptures
