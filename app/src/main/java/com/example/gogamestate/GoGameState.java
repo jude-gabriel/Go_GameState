@@ -13,14 +13,15 @@ public class GoGameState {
     private int player1Score;            //Stores Player 1's score
     private int player2Score;            //Stores Player 2's score
     private boolean gameOver;            //Tracks whether the game is over
-    private final CountDownTimer countUpTimer; //Timer for the game
-    private int totalMoves;              //Total number of moves made in game
+    private final int totalTime;               //Total time elapsed in the game
     private Stone[][] stoneCopiesFirst;  //Stores the board from two moves ago
     private Stone[][] stoneCopiesSecond; //Stores the board from one move ago
-    private int totalTime;               //Total time elapsed in the game
+    //private final CountDownTimer countUpTimer; //Timer for the game
+    private int totalMoves;              //Total number of moves made in game
     private int numSkips;                //Tracks whether two consecutive skips
 
-    /** GoGameState
+    /**
+     * GoGameState
      * Constructor for the GoGameStateClass
      *
      * @author Jude Gabriel
