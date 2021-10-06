@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity{
         Button runTest = findViewById(R.id.runTest);
         Button forfeit = findViewById(R.id.forfeitTest);
 
-        // override the run test
+        // override the run test for click
         // @author Jude Gabriel
         runTest.setOnClickListener(new View.OnClickListener() {
             @Override
