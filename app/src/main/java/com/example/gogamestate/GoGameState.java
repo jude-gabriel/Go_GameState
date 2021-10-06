@@ -10,11 +10,11 @@ public class GoGameState {
     private final float userXClick;            //The x coordinate the user clicks
     private final float userYClick;            //The y coordinate the user clicks
     private final int boardSize;         //The dimensions of the board
-    private final int player1Score;            //Stores Player 1's score
-    private final int player2Score;            //Stores Player 2's score
+    private int player1Score;            //Stores Player 1's score
+    private int player2Score;            //Stores Player 2's score
     private boolean gameOver;            //Tracks whether the game is over
     private final CountDownTimer countUpTimer; //Timer for the game
-    private final int totalMoves;              //Total number of moves made in game
+    private int totalMoves;              //Total number of moves made in game
     private Stone[][] stoneCopiesFirst;  //Stores the board from two moves ago
     private Stone[][] stoneCopiesSecond; //Stores the board from one move ago
     private int totalTime;               //Total time elapsed in the game
@@ -159,8 +159,13 @@ public class GoGameState {
         int iIndex = indexVals[0];
         int jIndex = indexVals[1];
 
+        //Determine the current player's color
+        Stone.StoneColor currStoneColor;
+        if (isPlayer1) currStoneColor = Stone.StoneColor.BLACK;
+        else currStoneColor = Stone.StoneColor.WHITE;
+
         //If total moves is 1, copy to track board from two moves ago
-        if(totalMoves == 1){
+        if (totalMoves == 1) {
             stoneCopiesFirst = deepCopyArray(gameBoard);
         }
 
@@ -173,7 +178,30 @@ public class GoGameState {
         boolean validMove = isValidLocation(iIndex, jIndex);
 
         //Place stone if valid
-        placeStone(iIndex, jIndex);
+        if (validMove) {
+            //Update the liberty's color based on the current player's move
+            gameBoard[iIndex][jIndex].setStoneColor(currStoneColor);
+
+            //Determine if capture is possible
+            iterateAndCheckCapture(iIndex, jIndex);
+
+            //Capture if possible
+            commenceCapture(currStoneColor);
+
+            //Reset the capture and player
+            resetCapture();
+            isPlayer1 = !isPlayer1;
+
+            //Reset the score in case of captures and recalculate score
+            player1Score = 0;
+            player1Score += calculateScore(Stone.StoneColor.BLACK, Stone.StoneColor.WHITE);
+
+            player2Score = 0;
+            player2Score += calculateScore(Stone.StoneColor.WHITE, Stone.StoneColor.BLACK);
+
+            //Increment number of moves
+            totalMoves++;
+        }
 
      /*   //Player1's move
         if(isPlayer1) {
@@ -285,12 +313,12 @@ public class GoGameState {
     public void iterateAndCheckCapture(int x, int y) {
         //Initialize a variable to store the stone color of current player
         //and the opponent's stone color
-        Stone.StoneColor stoneColor, oppStoneColor;
+        Stone.StoneColor currStoneColor, oppStoneColor;
         if (isPlayer1) {
-            stoneColor = Stone.StoneColor.BLACK;
+            currStoneColor = Stone.StoneColor.BLACK;
             oppStoneColor = Stone.StoneColor.WHITE;
         } else {
-            stoneColor = Stone.StoneColor.WHITE;
+            currStoneColor = Stone.StoneColor.WHITE;
             oppStoneColor = Stone.StoneColor.BLACK;
         }
 
@@ -302,7 +330,7 @@ public class GoGameState {
                     //Verify this position has not been checked for a capture already
                     if (gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.FALSE) {
                         //Check if the player can capture from this position
-                        checkCapture(i, j, stoneColor, oppStoneColor);
+                        checkCapture(i, j, currStoneColor, oppStoneColor);
                     }
                 }
             }
@@ -325,16 +353,16 @@ public class GoGameState {
     public void placeStone(int x, int y) {
         //Initialize a variable to store the stone color of current player
         //and the opponent's stone color
-        Stone.StoneColor stoneColor, oppStoneColor;
+        Stone.StoneColor currStoneColor, oppStoneColor;
         if (isPlayer1) {
-            stoneColor = Stone.StoneColor.BLACK;
+            currStoneColor = Stone.StoneColor.BLACK;
             oppStoneColor = Stone.StoneColor.WHITE;
         } else {
-            stoneColor = Stone.StoneColor.WHITE;
+            currStoneColor = Stone.StoneColor.WHITE;
             oppStoneColor = Stone.StoneColor.BLACK;
         }
         //Set the liberty to the current player's color
-        gameBoard[x][y].setStoneColor(stoneColor);
+        gameBoard[x][y].setStoneColor(currStoneColor);
 
         //Iterate through the board and determine whether they player can capture
         for (int i = 0; i < boardSize; i++) {
@@ -344,7 +372,7 @@ public class GoGameState {
                     //Verify this position has not been checked for a capture already
                     if (gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.FALSE) {
                         //Check if the player can capture from this position
-                        checkCapture(i, j, stoneColor, oppStoneColor);
+                        checkCapture(i, j, currStoneColor, oppStoneColor);
                     }
                 }
             }
