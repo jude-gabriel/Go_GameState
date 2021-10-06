@@ -353,7 +353,7 @@ public class GoGameState {
      * <p>
      * TODO: test whether this function works
      */
-    public void placeStone(int x, int y) {
+    /*public void placeStone(int x, int y) {
         //Initialize a variable to store the stone color of current player
         //and the opponent's stone color
         Stone.StoneColor currStoneColor, oppStoneColor;
@@ -380,7 +380,7 @@ public class GoGameState {
                 }
             }
         }
-    }
+    }*/
 
 
     /** isValidLocation
@@ -436,20 +436,22 @@ public class GoGameState {
         return true;
     }
 
-    /** selfCapture
+    /**
+     * selfCapture
      * Checks if a stone can capture itself
-     * @param x     i index of stone
-     * @param y     j index of stone
-     * @param checkCol      Capturing stone color
-     * @param capCol        Captured stone color
      *
+     * @param x        i index of stone
+     * @param y        j index of stone
+     * @param checkCol Capturing stone color
+     * @param capCol   Captured stone color
      * @return true if the stone captures itself
-     *
      * @author Jude Gabriel
+     * @author Brynn Harrington
      */
     public boolean selfCapture(int x, int y, Stone.StoneColor checkCol, Stone.StoneColor capCol){
-        //Iterate through the board
-        for(int i = 0; i < boardSize; i++){
+        //Iterate through the board and determine if capture is possible
+        iterateAndCheckCapture(x, y);
+/*        for(int i = 0; i < boardSize; i++){
             for(int j = 0; j < boardSize; j++){
                 //Determine if the liberty is empty
                 if(gameBoard[i][j].getStoneColor() == Stone.StoneColor.NONE){
@@ -460,7 +462,7 @@ public class GoGameState {
                     }
                 }
             }
-        }
+        }*/
         //If able to capture, capture the stone and reset it
         commenceCapture(capCol);
         resetCapture();
@@ -563,15 +565,27 @@ public class GoGameState {
         //Create a deep copy of the copy array
         Stone[][] copyArray = deepCopyArray(gameBoard);
 
-        //Place the new chip on the board for the given player
+        //Determine the current color
+        Stone.StoneColor currStoneColor;
+        if (isPlayer1) currStoneColor = Stone.StoneColor.BLACK;
+        else currStoneColor = Stone.StoneColor.WHITE;
+
+        //Iterate and determine if capture is possible, if so commence capture
+        //and reset capture
+        iterateAndCheckCapture(x, y);
+        commenceCapture(currStoneColor);
+        resetCapture();
+
+        /*//Place the new chip on the board for the given player
         if(isPlayer1){
             gameBoard[x][y].setStoneColor(Stone.StoneColor.BLACK);
 
-            //Iterate through the board
-            for(int i = 0; i < boardSize; i++) {
+
+            //Iterate through the board and determine if capture is possible
+            iterateAndCheckCapture(x, y);
+                for(int i = 0; i < boardSize; i++) {
                 for (int j = 0; j < boardSize; j++) {
                     //Verify liberty is empty and the stone has not been checked
-                    // TODO: create helper function since this line of code is used often
                     if (gameBoard[i][j].getStoneColor() == Stone.StoneColor.NONE) {
                         if (gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.FALSE) {
                             //Check if able to capture
@@ -600,8 +614,7 @@ public class GoGameState {
             }
             //Capture stone if able to
             commenceCapture(Stone.StoneColor.BLACK);
-        }
-        resetCapture();
+        }*/
 
         //Check if the boards are equal
         for (int i = 0; i < boardSize; i++) {
@@ -872,7 +885,7 @@ public class GoGameState {
             }
         }
 
-        // commented out for testing purposes
+        //Add to the
         for (int i = 0; i < boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {
                 //If empty liberties, add to current score
