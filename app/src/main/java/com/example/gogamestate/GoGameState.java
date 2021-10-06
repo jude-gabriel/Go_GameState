@@ -16,7 +16,7 @@ public class GoGameState {
     private final int totalTime;               //Total time elapsed in the game
     private Stone[][] stoneCopiesFirst;  //Stores the board from two moves ago
     private Stone[][] stoneCopiesSecond; //Stores the board from one move ago
-    //private final CountDownTimer countUpTimer; //Timer for the game
+    // private final CountDownTimer countUpTimer; //Timer for the game
     private int totalMoves;              //Total number of moves made in game
     private int numSkips;                //Tracks whether two consecutive skips
 
