@@ -15,8 +15,8 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity{
 
     public int counter = 0;
-    public float x;
-    public float y;
+    //public float x;
+    //public float y;
 
     GoGameState firstInstance;
     GoGameState secondInstance;
