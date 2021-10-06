@@ -12,9 +12,12 @@ import android.widget.TextView;
 /* ERRORS
  * TODO - when game finishes, needs to set the game state to null
  */
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
 
+    // initialize the counter for the number of clicks
     public int counter = 0;
+
+    // initialize the x and y coordinates
     public float x;
     public float y;
 
@@ -40,6 +43,7 @@ public class MainActivity extends AppCompatActivity{
 
         // override the run test for click
         // @author Jude Gabriel
+        // @author Brynn Harrington
         runTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,16 +60,21 @@ public class MainActivity extends AppCompatActivity{
                         theText.setText(gameState.toString());
                     }
 
-                    if(counter == 2) {
+                    if (counter == 2) {
                         boolean move = gameState.playerMove(600, 750);
                         theText.setText(gameState.toString());
                     }
-                    if(counter == 3) {
+                    if (counter == 3) {
                         boolean move = gameState.playerMove(600, 400);
                         theText.setText(gameState.toString());
                     }
                     if (counter == 4) {
                         boolean move = gameState.playerMove(950, 400);
+                        theText.setText(gameState.toString());
+                    }
+                    // run the forfeit test
+                    if (counter == 5) {
+                        gameState.testForfeit();
                         theText.setText(gameState.toString());
                     }
 
