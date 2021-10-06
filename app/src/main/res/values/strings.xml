@@ -5,4 +5,5 @@
     <string name="forfeit_test">Forfeit Test</string>
     <string name="test2">test2</string>
     <string name="test">test</string>
+    <string name="runTestsString">Click to run tests</string>
 </resources>

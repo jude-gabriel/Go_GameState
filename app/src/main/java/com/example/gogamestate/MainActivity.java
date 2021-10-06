@@ -50,7 +50,8 @@ public class MainActivity extends AppCompatActivity{
             public void onClick(View v) {
                 if (firstInstance != null && secondInstance != null && thirdInstance != null) {
 
-                    theText.setText("Click to run tests");
+                    //Modified to make a string resource
+                    theText.setText(R.string.runTestsString);
 
                     //Initialize the empty board
                     if (counter == 0) {
@@ -60,7 +61,7 @@ public class MainActivity extends AppCompatActivity{
                     }
 
                     //Prepopulate with one stone missing from capture
-                    if(counter == 1){
+                    if (counter == 1) {
                         firstInstance.testCaptures();
                         CharSequence firstinst = firstInstance.toString();
                         theText.append((CharSequence) secondInstance.toString());
