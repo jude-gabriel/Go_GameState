@@ -32,13 +32,6 @@
             android:layout_weight="1"
             android:text="@string/forfeit_test" />
 
-        <SeekBar
-            android:id="@+id/testBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:max="3"
-            android:progress="1" />
-
     </LinearLayout>
 
     <LinearLayout
