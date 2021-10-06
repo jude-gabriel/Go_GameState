@@ -55,22 +55,22 @@ public class GoGameState {
         stoneCopiesSecond = new Stone[boardSize][boardSize];
         totalTime = 0;
 
-        //Use lambda function to redefine the timer for the game
-        countUpTimer = new CountDownTimer(30000, 1000) {
-            //override the onTick method
-            @Override
-            public void onTick(long millisUntilFinish){
-                totalTime++;
-            }
-
-            //override the onFinish method
-            @Override
-            public void onFinish(){
-                countUpTimer.start();
-            }
-        };
-        //Initialize the timer
-        countUpTimer.start();
+//        //Use lambda function to redefine the timer for the game
+//        countUpTimer = new CountDownTimer(30000, 1000) {
+//            //override the onTick method
+//            @Override
+//            public void onTick(long millisUntilFinish){
+//                totalTime++;
+//            }
+//
+//            //override the onFinish method
+//            @Override
+//            public void onFinish(){
+//                countUpTimer.start();
+//            }
+//        };
+//        //Initialize the timer
+//        countUpTimer.start();
     }
 
 
@@ -94,7 +94,7 @@ public class GoGameState {
         this.userXClick = gs.userXClick;
         this.userYClick = gs.userYClick;
         this.gameBoard = new Stone[boardSize][boardSize];
-        this.gameBoard = gs.gameBoard;
+        this.gameBoard = deepCopyArray(gs.gameBoard);
         this.player1Score = gs.player1Score;
         this.player2Score = gs.player2Score;
         this.gameOver = gs.gameOver;
@@ -104,20 +104,20 @@ public class GoGameState {
         this.totalTime = gs.totalTime;
 
         //Initialize the timer for the deep copy of the game
-        this.countUpTimer = new CountDownTimer(30000, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                totalTime++;
-            }
-
-            @Override
-            public void onFinish() {
-                countUpTimer.start();
-            }
-        };
-
-        //Initialize the counter for the game
-        countUpTimer.start();
+//        this.countUpTimer = new CountDownTimer(30000, 1000) {
+//            @Override
+//            public void onTick(long millisUntilFinished) {
+//                totalTime++;
+//            }
+//
+//            @Override
+//            public void onFinish() {
+//                countUpTimer.start();
+//            }
+//        };
+//
+//        //Initialize the counter for the game
+//        countUpTimer.start();
     }
 
 

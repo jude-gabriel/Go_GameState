@@ -12,16 +12,16 @@ import android.widget.TextView;
 /* ERRORS
  * TODO - when game finishes, needs to set the game state to null
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
-    // initialize the counter for the number of clicks
     public int counter = 0;
-
-    // initialize the x and y coordinates
     public float x;
     public float y;
 
-    GoGameState gameState;
+    GoGameState firstInstance;
+    GoGameState secondInstance;
+    GoGameState thirdInstance;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +32,9 @@ public class MainActivity extends AppCompatActivity {
         MainActivity main = new MainActivity();
 
         // initialize a new game state
-        gameState = new GoGameState();
+        firstInstance = new GoGameState();
+        secondInstance = new GoGameState(firstInstance);
+        thirdInstance = new GoGameState();
 
         // display the information test
         TextView theText = findViewById(R.id.infoText);
@@ -43,54 +45,41 @@ public class MainActivity extends AppCompatActivity {
 
         // override the run test for click
         // @author Jude Gabriel
-        // @author Brynn Harrington
         runTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (gameState != null) {
+                if (firstInstance != null && secondInstance != null && thirdInstance != null) {
+
+                    theText.setText("Click to run tests");
 
                     //Initialize the empty board
                     if (counter == 0) {
-                        theText.setText(gameState.toString());
+                        theText.setText(firstInstance.toString());
+                        CharSequence secondInst = secondInstance.toString();
+                        theText.append(secondInst);
                     }
 
                     //Prepopulate with one stone missing from capture
                     if(counter == 1){
-                        gameState.testCaptures();
-                        theText.setText(gameState.toString());
+                        firstInstance.testCaptures();
+                        CharSequence firstinst = firstInstance.toString();
+                        theText.append((CharSequence) secondInstance.toString());
                     }
 
-                    if (counter == 2) {
-                        boolean move = gameState.playerMove(600, 750);
-                        theText.setText(gameState.toString());
+                    if(counter == 2) {
+                        //MAKE MOVES
                     }
-                    if (counter == 3) {
-                        boolean move = gameState.playerMove(600, 400);
-                        theText.setText(gameState.toString());
+                    if(counter == 3) {
+                        //MAKE MOVES
                     }
                     if (counter == 4) {
-                        boolean move = gameState.playerMove(950, 400);
-                        theText.setText(gameState.toString());
+                        //MAKE MOVES
+                        theText.append((CharSequence) firstInstance.toString());
+                        theText.append((CharSequence) secondInstance.toString());
+                        theText.append((CharSequence) thirdInstance.toString());
                     }
-                    // run the forfeit test
-                    if (counter == 5) {
-                        gameState.testForfeit();
-                        theText.setText(gameState.toString());
-                    }
-
                     counter++;
                 }
-            }
-        });
-
-        // test forfeiting
-        // @author Brynn Harrington
-        forfeit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Call the forfeit test function
-                gameState.testForfeit();
-                theText.setText(gameState.toString());
             }
         });
     }
