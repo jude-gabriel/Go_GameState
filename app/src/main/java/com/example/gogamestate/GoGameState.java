@@ -605,7 +605,7 @@ public class GoGameState {
 
         //If game is over, only display that score
         if (gameOver) return playerTurn + " " + firstPlayerScore + " " +
-                secondPlayerScore + theBoard + " \nGAME OVER ";
+                secondPlayerScore + theBoard + " \nGAME OVER\n";
 
         //If game isn't over, display information
         for (int i = 0; i < boardSize; i++) {
