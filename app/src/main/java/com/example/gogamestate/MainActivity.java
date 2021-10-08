@@ -102,3 +102,23 @@ public class MainActivity extends AppCompatActivity{
         });
     }
 }
+
+
+
+
+
+
+
+//Make a test for the capture
+      //In the testing method initializes surrounded stones and all but one surrounding stone
+      //Then on click place the last surrounding stones
+
+//make a test for repeated board positions
+      //in testing method initialize a set of positions
+      //in on click play two consecutive moves so that it repeats the first position
+
+//Make a test for forfeit
+    //Show that this ends game
+
+//Make a test for skip turn
+       //show two consecutive skips ends the game
