@@ -67,9 +67,9 @@ public class MainActivity extends AppCompatActivity{
 
                         //Populate the board with one stone away from capturing
                         case 1:
-                            firstInstance.testCaptures();
+                            firstInstance.testCapture();
                             CharSequence firstinst = firstInstance.toString();
-                            theText.append((CharSequence) secondInstance.toString());
+                            theText.append(secondInstance.toString());
                             counter++;
                             break;
 
@@ -86,9 +86,9 @@ public class MainActivity extends AppCompatActivity{
                         //MAKE MOVES
                         case 4:
                             //Update the text for each instance
-                            theText.append((CharSequence) firstInstance.toString());
-                            theText.append((CharSequence) secondInstance.toString());
-                            theText.append((CharSequence) thirdInstance.toString());
+                            theText.append(firstInstance.toString());
+                            theText.append(secondInstance.toString());
+                            theText.append(thirdInstance.toString());
                             counter++;
                             break;
                         //Test forfeiting
