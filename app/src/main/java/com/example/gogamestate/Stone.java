@@ -1,3 +1,14 @@
+/**
+ * Stone.java
+ *
+ * @author Natalie Tashchuk
+ * @author Mia Anderson
+ * @author Brynn Harrington
+ * @author Jude Gabriel
+ */
+
+
+
 package com.example.gogamestate;
 
 public class Stone {
@@ -56,10 +67,26 @@ public class Stone {
         checkedStone = CheckedStone.FALSE;
     }
 
+
+    /**
+     * Getter for the radius of the stone
+     *
+     * @return an int representing the radius
+     *
+     * @author Natalie Tashchuck
+     */
     public int getRadius(){
         return radius;
     }
 
+
+    /**
+     * Setter for the radius of the stone
+     *
+     * @param r     radius to set
+     *
+     * @author Natalie Tashchuk
+     */
     public void setRadius(int r){
         radius = r;
     }
@@ -69,6 +96,8 @@ public class Stone {
      * Setter for the Stone's StoneColor enum
      *
      * @param stoneColor    The StoneColor to set the Stone to
+     *
+     * @author Natalie Tashchuk
      */
     public void setStoneColor(StoneColor stoneColor) {
         this.stoneColor = stoneColor;
@@ -79,6 +108,8 @@ public class Stone {
      * Getter for the Stone's color
      *
      * @return The StoneColor the stone has
+     *
+     * @author Natalie Tashchuk
      */
     public StoneColor getStoneColor(){
         return stoneColor;
@@ -89,11 +120,21 @@ public class Stone {
      * Getter for the Stone's center x-coordinate
      *
      * @return a float representing the x value
+     *
+     * @author Natalie Tashchuk
      */
     public float getxLocation(){
         return xLocation;
     }
 
+
+    /**
+     * Sets the x location of the stone
+     *
+     * @param x     a float for the x position
+     *
+     * @author Natalie Tashchuk
+     */
     public void setxLocation(float x){
         xLocation = x;
     }
@@ -109,6 +150,11 @@ public class Stone {
     }
 
 
+    /**
+     * Sets the y lcoation of the stone
+     *
+     * @param y     float for the y value
+     */
     public void setyLocation(float y){
         yLocation = y;
     }
@@ -123,6 +169,12 @@ public class Stone {
         return xLeft;
     }
 
+
+    /**
+     * Setter for the left x position
+     *
+     * @param x     a float for the x position
+     */
     public void setxLeft(float x){
         xLeft = x;
     }
@@ -138,6 +190,11 @@ public class Stone {
     }
 
 
+    /**
+     * Setter for the x right position of the stone
+     *
+     * @param x     a float for the x position
+     */
     public void setxRight(float x){
         xRight = x;
     }
@@ -152,6 +209,12 @@ public class Stone {
         return yTop;
     }
 
+
+    /**
+     * Setter for the yTop position of a stone
+     *
+     * @param y     a float for the y position
+     */
     public void setyTop(float y){
         yTop = y;
     }

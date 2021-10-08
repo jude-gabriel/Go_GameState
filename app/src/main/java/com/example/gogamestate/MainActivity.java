@@ -1,3 +1,14 @@
+/**
+ * MainActivity.java
+ *
+ * @author Natalie Tashchuk
+ * @author Mia Anderson
+ * @author Brynn Harrington
+ * @author Jude Gabriel
+ */
+
+
+
 package com.example.gogamestate;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -6,12 +17,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.SeekBar;
-import android.widget.TextView;
 
-/* ERRORS
- * TODO - when game finishes, needs to set the game state to null
- */
+
 public class MainActivity extends AppCompatActivity{
 
     public int counter = 0;
@@ -26,8 +33,6 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // initialize a new main activity object
-        MainActivity main = new MainActivity();
 
         // initialize a new game state
         firstInstance = new GoGameState();
@@ -35,7 +40,7 @@ public class MainActivity extends AppCompatActivity{
         thirdInstance = new GoGameState();
 
         // display the information test
-        TextView theText = findViewById(R.id.infoText);
+        EditText theText = findViewById(R.id.infoText);
 
         // initialize objects for the buttons to test
         Button runTest = findViewById(R.id.runTest);
@@ -44,6 +49,7 @@ public class MainActivity extends AppCompatActivity{
          * Override the run test for click using a lambda function
          * @author Jude Gabriel
          * @author Brynn Harrington
+         * @author Mia Anderson
          */
         runTest.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,20 +60,25 @@ public class MainActivity extends AppCompatActivity{
                     theText.setText(R.string.runTestsString);
                     //Utilize a switch on counter for tests
                     switch (counter) {
+
                         //Test capturing
                         case 0:
                             //Initialize the empty board
+                            theText.append("Setup Phase");
+
                             theText.setText(firstInstance.toString());
-                            CharSequence secondInst = secondInstance.toString();
-                            theText.append(secondInst);
+                            theText.setText(secondInstance.toString());
+                            theText.setText(thirdInstance.toString());
                             counter++;
                             break;
 
-                        //Populate the board with one stone away from capturing
+
+                        //Set up the capture
                         case 1:
                             //Prepopulate the board to test a capture
                             firstInstance.testCapture();
 
+                            theText.append("Capture Phase: ");
 
                             //Display on the screen
                             theText.append(firstInstance.toString());
@@ -79,12 +90,13 @@ public class MainActivity extends AppCompatActivity{
                             break;
 
 
-                        //MAKE MOVES
+                        //Place a stone to complete the capture
                         case 2:
-
                             //Place a black stone to complete a capture
                             boolean works = firstInstance.playerMove(2, 2);
                             works = firstInstance.playerMove(7, 7);
+
+                            theText.append("Capture Phase: ");
 
                             //Display on the screen
                             theText.append(firstInstance.toString());
@@ -96,16 +108,18 @@ public class MainActivity extends AppCompatActivity{
                             break;
 
 
-                        //MAKE MOVES
+                        //Set up the board and make the first capture for a repeated move
                         case 3:
-                            //Increment the counter and break
-                            counter++;
-                            break;
+                            //Reset the board to all blank to initialize for repeated test
+                            firstInstance.resetStones();
+                            firstInstance.testRepeatedPosition();
 
+                            //Black makes the first capture
+                            firstInstance.playerMove(2,1);
 
-                        //MAKE MOVES
-                        case 4:
-                            //Update the text for each instance
+                            theText.append("Repeated Position Phase: ");
+
+                            //Display on the screen
                             theText.append(firstInstance.toString());
                             theText.append(secondInstance.toString());
                             theText.append(thirdInstance.toString());
@@ -115,10 +129,17 @@ public class MainActivity extends AppCompatActivity{
                             break;
 
 
-                        //Test repeated moves
-                        case 5:
-                            //Attempt to repeat a move
-                            firstInstance.testRepeatedPosition();
+                        //Have white make a move such that the board will be repeated
+                        case 4:
+                            //White makes the next move
+                            firstInstance.playerMove(1, 1);
+
+                            theText.append("Repeated Position Phase: ");
+
+                            //Display on screen. Is the same since move was invalid
+                            theText.append(firstInstance.toString());
+                            theText.append(secondInstance.toString());
+                            theText.append(thirdInstance.toString());
 
                             //Increment the counter and break
                             counter++;
@@ -126,10 +147,13 @@ public class MainActivity extends AppCompatActivity{
 
 
                         //Test skipping twice
-                        case 6:
+                        case 5:
                             //Attempt to skip twice
                             firstInstance.skipTurn();
                             firstInstance.skipTurn();
+
+                            theText.append("Skip Turn Forfeit Phase: ");
+
                             theText.append(firstInstance.toString());
                             theText.append(secondInstance.toString());
                             theText.append(thirdInstance.toString());
@@ -139,13 +163,26 @@ public class MainActivity extends AppCompatActivity{
                             counter++;
                             break;
 
+
                         //Test forfeiting
-                        case 7:
+                        case 6:
                             //Attempt to forfeit on the first instance
                             firstInstance.testForfeit();
 
+                            theText.append("Player Forfeits Phase: ");
+
+                            //Display on screen game will be over
+                            theText.append(firstInstance.toString());
+                            theText.append(secondInstance.toString());
+                            theText.append(thirdInstance.toString());
+
                             //Increment the counter and break
                             counter++;
+                            break;
+
+                        //All tests are complete. Let the user know
+                        default:
+                            theText.append("Restart Application to Run Tests Again");
                             break;
                     }
                 }
@@ -153,18 +190,3 @@ public class MainActivity extends AppCompatActivity{
         });
     }
 }
-
-
-//Make a test for the capture
-      //In the testing method initializes surrounded stones and all but one surrounding stone
-      //Then on click place the last surrounding stones
-
-//make a test for repeated board positions
-      //in testing method initialize a set of positions
-      //in on click play two consecutive moves so that it repeats the first position
-
-//Make a test for forfeit
-    //Show that this ends game
-
-//Make a test for skip turn
-       //show two consecutive skips ends the game

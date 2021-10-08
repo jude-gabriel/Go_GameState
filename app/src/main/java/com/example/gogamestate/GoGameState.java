@@ -1,14 +1,24 @@
+/**
+ * GoGameState.java
+ *
+ * @author Natalie Tashchuk
+ * @author Mia Anderson
+ * @author Brynn Harrington
+ * @author Jude Gabriel
+ */
+
+
 package com.example.gogamestate;
 
 
 import android.os.CountDownTimer;
 
 public class GoGameState {
+
+    /* Private Instance Variables */
     private final float userXClick;         //The x coordinate the user clicks
     private final float userYClick;         //The y coordinate the user clicks
     private final int boardSize;            //The dimensions of the board
-    private final int totalTime;            //Total time elapsed in the game
-    /* GoGameState private instance variables */
     private boolean isPlayer1;              //boolean value for which player's turn it is
     private Stone[][] gameBoard;            //Stones array for locations on the board
     private int player1Score;               //Stores Player 1's score
@@ -53,24 +63,6 @@ public class GoGameState {
         //Initialize the arrays that store former board positions
         stoneCopiesFirst = new Stone[boardSize][boardSize];
         stoneCopiesSecond = new Stone[boardSize][boardSize];
-        totalTime = 0;
-
-//        //Use lambda function to redefine the timer for the game
-//        countUpTimer = new CountDownTimer(30000, 1000) {
-//            //override the onTick method
-//            @Override
-//            public void onTick(long millisUntilFinish){
-//                totalTime++;
-//            }
-//
-//            //override the onFinish method
-//            @Override
-//            public void onFinish(){
-//                countUpTimer.start();
-//            }
-//        };
-//        //Initialize the timer
-//        countUpTimer.start();
     }
 
 
@@ -99,23 +91,6 @@ public class GoGameState {
         this.numSkips = gs.numSkips;
         this.isPlayer1 = gs.isPlayer1;
         this.totalMoves = gs.totalMoves;
-        this.totalTime = gs.totalTime;
-
-        //Initialize the timer for the deep copy of the game
-//        this.countUpTimer = new CountDownTimer(30000, 1000) {
-//            @Override
-//            public void onTick(long millisUntilFinished) {
-//                totalTime++;
-//            }
-//
-//            @Override
-//            public void onFinish() {
-//                countUpTimer.start();
-//            }
-//        };
-//
-//        //Initialize the counter for the game
-//        countUpTimer.start();
     }
 
 
@@ -472,7 +447,6 @@ public class GoGameState {
      *
      * @author Jude Gabriel
      *
-     * TODO: Did it pass testing?
      */
     public boolean checkRepeatedPosition(int x, int y){
         //Set a truth counter to zero
@@ -571,7 +545,6 @@ public class GoGameState {
      * @author Jude Gabriel
      * @author Brynn Harrington
      *
-     * TODO: Did it pass testing?
      */
     public boolean skipTurn() {
         //Reset the current player to the opponent
@@ -595,7 +568,6 @@ public class GoGameState {
      *
      * @author Jude Gabriel
      *
-     * vTODO: Did it pass testing?
      */
     public boolean forfeit(){
         // set game over to true since forfeited
@@ -619,12 +591,6 @@ public class GoGameState {
         String firstPlayerScore = "Player 1 Score: " + player1Score;
         String secondPlayerScore = "Player 2 Score: " + player2Score;
 
-        //Calculate the time elapsed
-        int minutes = totalTime / 60;
-        int seconds = totalTime - (minutes * 60);
-
-        //Convert calculations to a string
-        String timerString = "Time:" + minutes + ":" + seconds;
 
         //Display which player's turn it is
         String playerTurn;
@@ -638,14 +604,15 @@ public class GoGameState {
         StringBuilder theBoard = new StringBuilder();
 
         //If game is over, only display that score
-        if (gameOver) return timerString + " " + playerTurn + " " + firstPlayerScore + " " +
-                secondPlayerScore + theBoard + " \nGAME OVER";
+        if (gameOver) return playerTurn + " " + firstPlayerScore + " " +
+                secondPlayerScore + theBoard + " \nGAME OVER ";
 
         //If game isn't over, display information
         for (int i = 0; i < boardSize; i++) {
             theBoard.append("\n");
             for (int j = 0; j < boardSize; j++) {
-                theBoard.append("\t").append(i).append(", ").append(j).append(" is ").append(gameBoard[i][j].getStoneColor());
+                theBoard.append("\t").append(i).append(", ").append(j).append(" is ")
+                        .append(gameBoard[i][j].getStoneColor());
             }
         }
 
@@ -714,47 +681,29 @@ public class GoGameState {
         gameBoard[1][2].setStoneColor(Stone.StoneColor.BLACK);
         gameBoard[2][0].setStoneColor(Stone.StoneColor.BLACK);
         gameBoard[2][1].setStoneColor(Stone.StoneColor.BLACK);
-
     }
+
 
     /**
      * testRepeatedPositions
      * Used to test a player does not repeat the past position
      *
      * @author Brynn Harrington
+     * @author Jude Gabriel
      */
     public void testRepeatedPosition() {
-        //Capture the current white stone
-        gameBoard[0][0].setStoneColor(Stone.StoneColor.BLACK);
+
+        //Set up the triangle of black stones
         gameBoard[0][1].setStoneColor(Stone.StoneColor.BLACK);
-        gameBoard[0][2].setStoneColor(Stone.StoneColor.BLACK);
         gameBoard[1][0].setStoneColor(Stone.StoneColor.BLACK);
-        gameBoard[1][1].setStoneColor(Stone.StoneColor.WHITE);
         gameBoard[1][2].setStoneColor(Stone.StoneColor.BLACK);
-        gameBoard[2][0].setStoneColor(Stone.StoneColor.BLACK);
-        gameBoard[2][1].setStoneColor(Stone.StoneColor.BLACK);
-        gameBoard[2][2].setStoneColor(Stone.StoneColor.BLACK);
 
-        //Try repeating the white stone position
+
+        //Set up the triangle of whiteStones
+        gameBoard[0][2].setStoneColor(Stone.StoneColor.WHITE);
         gameBoard[1][1].setStoneColor(Stone.StoneColor.WHITE);
-    }
-
-    /**
-     * testSkips
-     * Used to test if two consecutive skips ends the game
-     *
-     * @author Brynn Harrington
-     */
-    public void testSkips() {
-        //Populate the board
-        gameBoard[1][0].setStoneColor(Stone.StoneColor.BLACK);
-        gameBoard[1][1].setStoneColor(Stone.StoneColor.WHITE);
-
-        //Have player 1 skip
-        this.skipTurn();
-
-        //Have player 2 skip
-        this.skipTurn();
+        gameBoard[2][2].setStoneColor(Stone.StoneColor.WHITE);
+        gameBoard[1][3].setStoneColor(Stone.StoneColor.WHITE);
     }
 
 
@@ -763,19 +712,35 @@ public class GoGameState {
      * Used to test if forfeit works
      *
      * @author Brynn Harrington
+     * @author Jude Gabriel
      */
     public void testForfeit() {
+        gameOver = false;
+
         // dummy values for the board
         gameBoard[0][3].setStoneColor(Stone.StoneColor.BLACK);
         gameBoard[2][0].setStoneColor(Stone.StoneColor.BLACK);
         gameBoard[1][3].setStoneColor(Stone.StoneColor.WHITE);
         gameBoard[0][0].setStoneColor(Stone.StoneColor.WHITE);
 
-        // calculate the current score
-        //this.calculateScore(Stone.StoneColor.BLACK, Stone.StoneColor.WHITE);
-        //this.calculateScore(Stone.StoneColor.WHITE, Stone.StoneColor.BLACK);
-
         // forfeit
         this.forfeit();
     }
+
+
+    /**
+     * Used to reset the board in testing
+     *
+     * @author Jude Gabriel
+     */
+    public void resetStones(){
+        for(int i = 0; i < boardSize; i++){
+            for(int j = 0; j < boardSize; j++){
+                gameBoard[i][j].setStoneColor(Stone.StoneColor.NONE);
+            }
+        }
+    }
 }
+
+
+
