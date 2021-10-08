@@ -85,8 +85,6 @@ public class GoGameState {
      * @author Natalie Tashchuk
      * @author Mia Anderson
      * @author Brynn Harrington
-     * <p>
-     * TODO: requires testing (verify with teammates)
      */
     public GoGameState(GoGameState gs) {
         //Initialize the instance variables to the current game state
@@ -386,12 +384,7 @@ public class GoGameState {
         }
         commenceCapture(capCol);
         resetCapture();
-        if(gameBoard[x][y].getStoneColor() == capCol){
-            return false;
-        }
-        else{
-            return true;
-        }
+        return gameBoard[x][y].getStoneColor() != capCol;
     }
 
 
@@ -430,12 +423,11 @@ public class GoGameState {
     }
 
 
-    /** commerceCapture
+    /**
+     * commenceCapture
      * This method finds which stones can be captured and captures them
      *
      * @author Jude Gabriel
-     *
-     * TODO: Did it pass testing?
      */
     public void commenceCapture(Stone.StoneColor capCol){
         //Iterate through the board
@@ -600,7 +592,7 @@ public class GoGameState {
      *
      * @author Jude Gabriel
      *
-     * TODO: Did it pass testing?
+     * vTODO: Did it pass testing?
      */
     public boolean forfeit(){
         // set game over to true since forfeited
@@ -752,4 +744,8 @@ public class GoGameState {
         // forfeit
         this.forfeit();
     }
+
+    /**
+     *
+     * */
 }
