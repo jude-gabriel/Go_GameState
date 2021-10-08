@@ -161,8 +161,15 @@ public class GoGameState {
 
         //Determine the current player's color
         Stone.StoneColor currStoneColor;
-        if (isPlayer1) currStoneColor = Stone.StoneColor.BLACK;
-        else currStoneColor = Stone.StoneColor.WHITE;
+        Stone.StoneColor oppStoneColor;
+        if (isPlayer1) {
+            currStoneColor = Stone.StoneColor.BLACK;
+            oppStoneColor = Stone.StoneColor.WHITE;
+        }
+        else{
+            currStoneColor = Stone.StoneColor.WHITE;
+            oppStoneColor = Stone.StoneColor.BLACK;
+        }
 
         //If total moves is 1, copy to track board from two moves ago
         if (totalMoves == 1) {
@@ -186,7 +193,7 @@ public class GoGameState {
             iterateAndCheckCapture(iIndex, jIndex);
 
             //Capture if possible
-            commenceCapture(currStoneColor);
+            commenceCapture(oppStoneColor);
 
             //Reset the capture and player
             resetCapture();
@@ -368,15 +375,23 @@ public class GoGameState {
      * @author Brynn Harrington
      */
     public boolean selfCapture(int x, int y, Stone.StoneColor checkCol, Stone.StoneColor capCol){
-        //Iterate through the board and determine if capture is possible
-        iterateAndCheckCapture(x, y);
-
-        //If able to capture, capture the stone and reset it
+        for(int i = 0; i < boardSize; i++){
+            for(int j = 0; j < boardSize; j++){
+                if(gameBoard[i][j].getStoneColor() == Stone.StoneColor.NONE){
+                    if(gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.FALSE){
+                        checkCapture(i, j, checkCol, capCol);
+                    }
+                }
+            }
+        }
         commenceCapture(capCol);
         resetCapture();
-
-        //Return whether the stone liberty would capture itself
-        return gameBoard[x][y].getStoneColor() != capCol;
+        if(gameBoard[x][y].getStoneColor() == capCol){
+            return false;
+        }
+        else{
+            return true;
+        }
     }
 
 
