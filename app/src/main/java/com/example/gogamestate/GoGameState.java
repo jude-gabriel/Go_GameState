@@ -347,7 +347,7 @@ public class GoGameState {
         //If self capture, return false
         if (capCheck) return false;
 
-
+        //If total moves is greater than 2 and is repeated position return false
         if (totalMoves >= 2 && checkRepeatedPosition(iIndex, jIndex)) return false;
 
         //Reset the capture
@@ -373,9 +373,12 @@ public class GoGameState {
      * @author Brynn Harrington
      */
     public boolean selfCapture(int x, int y, Stone.StoneColor checkCol, Stone.StoneColor capCol){
+        //Iterate through the board
         for(int i = 0; i < boardSize; i++){
             for(int j = 0; j < boardSize; j++){
+                //Verify the stone is empty
                 if(gameBoard[i][j].getStoneColor() == Stone.StoneColor.NONE){
+                    //Verify the stone cannot be captured
                     if(gameBoard[i][j].getCheckedStone() == Stone.CheckedStone.FALSE){
                         checkCapture(i, j, checkCol, capCol);
                     }
@@ -625,7 +628,7 @@ public class GoGameState {
 
         //Display which player's turn it is
         String playerTurn;
-        if(isPlayer1){
+        if (isPlayer1) {
             playerTurn = "Player 1's turn.";
         } else {
             playerTurn = "Player 2's turn.";
@@ -633,16 +636,18 @@ public class GoGameState {
 
         //Convert the board information to a string
         StringBuilder theBoard = new StringBuilder();
+
+        //If game is over, only display that score
+        if (gameOver) return timerString + " " + playerTurn + " " + firstPlayerScore + " " +
+                secondPlayerScore + theBoard + " \nGAME OVER";
+
+        //If game isn't over, display invormation
         for (int i = 0; i < boardSize; i++) {
             theBoard.append("\n");
             for (int j = 0; j < boardSize; j++) {
                 theBoard.append("\t").append(i).append(", ").append(j).append(" is ").append(gameBoard[i][j].getStoneColor());
             }
         }
-
-        //If game is over, only display that score
-        if (gameOver) return timerString + " " + playerTurn + " " + firstPlayerScore + " " +
-                secondPlayerScore + theBoard + " \nGAME OVER";
 
         //Convert all information and return that string
         return playerTurn + " " + firstPlayerScore + " " +
@@ -719,7 +724,19 @@ public class GoGameState {
      * @author Brynn Harrington
      */
     public void testRepeatedPosition() {
+        //Capture the current white stone
+        gameBoard[0][0].setStoneColor(Stone.StoneColor.BLACK);
+        gameBoard[0][1].setStoneColor(Stone.StoneColor.BLACK);
+        gameBoard[0][2].setStoneColor(Stone.StoneColor.BLACK);
+        gameBoard[1][0].setStoneColor(Stone.StoneColor.BLACK);
+        gameBoard[1][1].setStoneColor(Stone.StoneColor.WHITE);
+        gameBoard[1][2].setStoneColor(Stone.StoneColor.BLACK);
+        gameBoard[2][0].setStoneColor(Stone.StoneColor.BLACK);
+        gameBoard[2][1].setStoneColor(Stone.StoneColor.BLACK);
+        gameBoard[2][2].setStoneColor(Stone.StoneColor.BLACK);
 
+        //Try repeating the white stone position
+        gameBoard[1][1].setStoneColor(Stone.StoneColor.WHITE);
     }
 
     /**
@@ -729,7 +746,15 @@ public class GoGameState {
      * @author Brynn Harrington
      */
     public void testSkips() {
+        //Populate the board
+        gameBoard[1][0].setStoneColor(Stone.StoneColor.BLACK);
+        gameBoard[1][1].setStoneColor(Stone.StoneColor.WHITE);
 
+        //Have player 1 skip
+        this.skipTurn();
+
+        //Have player 2 skip
+        this.skipTurn();
     }
 
 
@@ -753,8 +778,4 @@ public class GoGameState {
         // forfeit
         this.forfeit();
     }
-
-    /**
-     *
-     * */
 }

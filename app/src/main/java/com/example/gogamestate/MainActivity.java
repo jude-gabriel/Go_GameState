@@ -74,9 +74,10 @@ public class MainActivity extends AppCompatActivity{
                             theText.append(secondInstance.toString());
                             theText.append(thirdInstance.toString());
 
-                            //Update the counter for the next test
+                            //Update the counter for the next test and break
                             counter++;
                             break;
+
 
                         //MAKE MOVES
                         case 2:
@@ -90,15 +91,17 @@ public class MainActivity extends AppCompatActivity{
                             theText.append(secondInstance.toString());
                             theText.append(thirdInstance.toString());
 
-                            //Increment the counter
+                            //Increment the counter and break
                             counter++;
                             break;
 
+
                         //MAKE MOVES
                         case 3:
-                            //Increment the counter
+                            //Increment the counter and break
                             counter++;
                             break;
+
 
                         //MAKE MOVES
                         case 4:
@@ -107,16 +110,36 @@ public class MainActivity extends AppCompatActivity{
                             theText.append(secondInstance.toString());
                             theText.append(thirdInstance.toString());
 
-                            //Increment the counter
+                            //Increment the counter and break
+                            counter++;
+                            break;
+
+
+                        //Test repeated moves
+                        case 5:
+                            //Attempt to repeat a move
+                            firstInstance.testRepeatedPosition();
+
+                            //Increment the counter and break
+                            counter++;
+                            break;
+
+
+                        //Test skipping twice
+                        case 6:
+                            //Attempt to skip twice
+                            firstInstance.testSkips();
+
+                            //Increment the counter and break
                             counter++;
                             break;
 
                         //Test forfeiting
-                        case 5:
+                        case 7:
                             //Attempt to forfeit on the first instance
                             firstInstance.testForfeit();
 
-                            //Increment the counter
+                            //Increment the counter and break
                             counter++;
                             break;
                     }
