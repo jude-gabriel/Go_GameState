@@ -734,8 +734,8 @@ public class GoGameState {
                 secondPlayerScore + theBoard + " \nGAME OVER";
 
         //Convert all information and return that string
-        return timerString + " " + playerTurn + " " + firstPlayerScore + " " +
-                secondPlayerScore + " " + theBoard;
+        return playerTurn + " " + firstPlayerScore + " " +
+                secondPlayerScore + " " + theBoard + "\n";
     }
 
 
