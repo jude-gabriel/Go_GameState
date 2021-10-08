@@ -703,9 +703,8 @@ public class GoGameState {
         gameBoard[1][1].setStoneColor(Stone.StoneColor.WHITE);
         gameBoard[1][2].setStoneColor(Stone.StoneColor.BLACK);
         gameBoard[2][0].setStoneColor(Stone.StoneColor.BLACK);
-        gameBoard[1][3].setStoneColor(Stone.StoneColor.BLACK);
-        gameBoard[2][3].setStoneColor(Stone.StoneColor.BLACK);
-        gameBoard[2][2].setStoneColor(Stone.StoneColor.BLACK);
+        gameBoard[2][1].setStoneColor(Stone.StoneColor.BLACK);
+
     }
 
 

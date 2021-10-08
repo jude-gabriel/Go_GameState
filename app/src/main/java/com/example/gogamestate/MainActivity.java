@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity{
                         case 2:
 
                             //Place a black stone to complete a capture
-                            firstInstance.playerMove(2, 2);
+                            boolean works = firstInstance.playerMove(2, 2);
 
                             //Display on the screen
                             theText.append((CharSequence) firstInstance.toString());
