@@ -153,11 +153,11 @@ public class GoGameState {
      *
      * @author Jude Gabriel
      */
-    public boolean playerMove(float x, float y) {
+    public boolean playerMove(int x, int y) {
         //Find the liberty the user clicked on
         int[] indexVal = findStone(x, y);
-        int iIndex = indexVal[0];
-        int jIndex = indexVal[1];
+        int iIndex = x;
+        int jIndex = y;
 
         //Determine the current player's color
         Stone.StoneColor currStoneColor;
@@ -591,104 +591,12 @@ public class GoGameState {
      * TODO: likely need to exlude player 1 part
      */
     public boolean forfeit(){
-        //Check it is player 1's turn and sets gameOver to true
-        /*if(isPlayer1){
-            gameOver = true;
-            return true;
-        }*/
-        /// TODO: change back once verified testing correct
+
+        //TODO: change back once verified testing correct
         gameOver = true;
         return true;
     }
 
-
-    /** playDumbAI
-     * Allows the user to end the game and play the dumb AI
-     *
-     * @return true when the player selects to play the dumb AI on
-     *      their turn
-     *
-     * @author Jude Gabriel
-     *
-     * TODO: Requires testing
-     */
-    public boolean playDumbAI(){
-        //Checks if player 1 forfeits and plays the dumb AI
-        if(isPlayer1){
-            forfeit();
-            return true;
-        }
-        return false;
-    }
-
-
-    /** playSmartAI
-     * Allows the user to end the game and play the smart AI
-     *
-     * @return true when the player selects to play the smart AI on
-     *          their turn
-     *
-     * @author Jude Gabriel
-     *
-     * TODO: Requires testing
-     */
-    public boolean playSmartAI(){
-        //Checks if player 1 forfeits and plays the smart AI
-        if(isPlayer1){
-            forfeit();
-            return true;
-        }
-        return false;
-    }
-
-
-    /** play2Player
-     * Allows the user to end the current game and play a 2-player game
-     *
-     * @return true when the player selects to play a 2-player game on their turn
-     *
-     * @author Jude Gabriel
-     *
-     * TODO: Requires testing
-     */
-    public boolean play2Player(){
-        //Checks if player 1 forfeits and plays another human
-        if(isPlayer1){
-            forfeit();
-            return true;
-        }
-        return false;
-    }
-
-
-    /** quitGame
-     * Allows user to exit the application on their turn
-     *
-     * @return true when the player selects to quit the game on their turn
-     *
-     * @author Jude Gabriel
-     *
-     * TODO: Requires testing
-     */
-    public boolean quitGame() {
-        //Checks if player 1 quits the game
-        return isPlayer1;
-    }
-
-
-    /** networkPlay
-     * Allows the user to start a network game on their turn
-     *
-     * @return true when the player selects to play a network game on their turn
-     *
-     * @author Jude Gabriel
-     *
-     * TODO: Requires testing
-     */
-    public boolean networkPlay() {
-        //Checks if player 1 is playing network play
-        return isPlayer1;
-    }
 
     /** toString
      * Turns all relevant game information into a string
@@ -790,7 +698,7 @@ public class GoGameState {
      *
      * @author Jude Gabriel
      */
-    public void testCaptures() {
+    public void testCapture() {
         //Populate the board with stones
         gameBoard[0][3].setStoneColor(Stone.StoneColor.BLACK);
         gameBoard[2][0].setStoneColor(Stone.StoneColor.BLACK);
@@ -798,6 +706,16 @@ public class GoGameState {
         gameBoard[2][3].setStoneColor(Stone.StoneColor.BLACK);
         gameBoard[2][2].setStoneColor(Stone.StoneColor.BLACK);
     }
+
+
+    public void testRepeatedPosition(){
+
+    }
+
+    public void testSkips(){
+
+    }
+
 
     /**
      * testForfeit

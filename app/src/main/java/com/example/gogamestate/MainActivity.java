@@ -95,38 +95,8 @@ public class MainActivity extends AppCompatActivity{
                         case 5:
                             firstInstance.testForfeit();
                             counter++;
+                            break;
                     }
-
-
-                    //Initialize the empty board
-                    if (counter == 0) {
-                        theText.setText(firstInstance.toString());
-                        CharSequence secondInst = secondInstance.toString();
-                        theText.append(secondInst);
-                    }
-
-                    //Prepopulate with one stone missing from capture
-                    if (counter == 1) {
-                        firstInstance.testCaptures();
-                        CharSequence firstinst = firstInstance.toString();
-                        theText.append((CharSequence) secondInstance.toString());
-                    }
-
-                    if(counter == 2) {
-                        //MAKE MOVES
-                    }
-                    if (counter == 3) {
-                        //MAKE MOVES
-                    }
-                    if (counter == 4) {
-                        //MAKE MOVES
-                        theText.append((CharSequence) firstInstance.toString());
-                        theText.append((CharSequence) secondInstance.toString());
-                        theText.append((CharSequence) thirdInstance.toString());
-                    }
-                    //Test Forfeiting
-                    //if (counter)
-                    counter++;
                 }
             }
         });
