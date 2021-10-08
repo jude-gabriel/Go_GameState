@@ -15,8 +15,6 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity{
 
     public int counter = 0;
-    //public float x;
-    //public float y;
 
     GoGameState firstInstance;
     GoGameState secondInstance;
@@ -85,6 +83,7 @@ public class MainActivity extends AppCompatActivity{
 
                             //Place a black stone to complete a capture
                             boolean works = firstInstance.playerMove(2, 2);
+                            works = firstInstance.playerMove(7,7);
 
                             //Display on the screen
                             theText.append((CharSequence) firstInstance.toString());
