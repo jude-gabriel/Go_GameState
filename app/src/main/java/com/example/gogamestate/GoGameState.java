@@ -690,7 +690,6 @@ public class GoGameState {
 
 
     /*** HELPER METHODS FOR TESTING ***/
-    //TODO: ADD MORE TESTS FOR SMART AND DUMB AI
 
     /**
      * testCaptures
@@ -700,11 +699,14 @@ public class GoGameState {
      */
     public void testCapture() {
         //Populate the board with stones
-        gameBoard[0][3].setStoneColor(Stone.StoneColor.BLACK);
+        gameBoard[0][0].setStoneColor(Stone.StoneColor.BLACK);
+        gameBoard[0][1].setStoneColor(Stone.StoneColor.BLACK);
+        gameBoard[0][2].setStoneColor(Stone.StoneColor.BLACK);
+        gameBoard[1][0].setStoneColor(Stone.StoneColor.BLACK);
+        gameBoard[1][1].setStoneColor(Stone.StoneColor.WHITE);
+        gameBoard[1][2].setStoneColor(Stone.StoneColor.BLACK);
         gameBoard[2][0].setStoneColor(Stone.StoneColor.BLACK);
-        gameBoard[1][3].setStoneColor(Stone.StoneColor.BLACK);
-        gameBoard[2][3].setStoneColor(Stone.StoneColor.BLACK);
-        gameBoard[2][2].setStoneColor(Stone.StoneColor.BLACK);
+        gameBoard[2][1].setStoneColor(Stone.StoneColor.BLACK);
     }
 
 

@@ -67,14 +67,31 @@ public class MainActivity extends AppCompatActivity{
 
                         //Populate the board with one stone away from capturing
                         case 1:
-                            firstInstance.testCaptures();
-                            CharSequence firstinst = firstInstance.toString();
+                            //Prepopulate the board to test a capture
+                            firstInstance.testCapture();
+
+
+                            //Display on the screen
+                            theText.append((CharSequence) firstInstance.toString());
                             theText.append((CharSequence) secondInstance.toString());
+                            theText.append((CharSequence) thirdInstance.toString());
+
+                            //Update the counter for the next test
                             counter++;
                             break;
 
                         //MAKE MOVES
                         case 2:
+
+                            //Place a black stone to complete a capture
+                            firstInstance.playerMove(2, 2);
+
+                            //Display on the screen
+                            theText.append((CharSequence) firstInstance.toString());
+                            theText.append((CharSequence) secondInstance.toString());
+                            theText.append((CharSequence) thirdInstance.toString());
+
+
                             counter++;
                             break;
 
