@@ -147,12 +147,7 @@ public class MainActivity extends AppCompatActivity{
             }
         });
     }
-}
-
-
-
-
-
+} 
 
 
 //Make a test for the capture
