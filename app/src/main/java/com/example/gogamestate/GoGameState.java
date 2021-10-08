@@ -692,11 +692,9 @@ public class GoGameState {
     }
 
 
-    /*** HELPER METHODS FOR TESTING ***/
+////////// HELPER METHODS FOR TESTING //////////
 
-    /**
-    /* HELPER METHODS FOR TESTING
-     * testCaptures
+    /** testCaptures
      * Used to test if captures works
      *
      * @author Jude Gabriel
@@ -714,12 +712,23 @@ public class GoGameState {
 
     }
 
-
-    public void testRepeatedPosition(){
+    /**
+     * testRepeatedPositions
+     * Used to test a player does not repeat the past position
+     *
+     * @author Brynn Harrington
+     */
+    public void testRepeatedPosition() {
 
     }
 
-    public void testSkips(){
+    /**
+     * testSkips
+     * Used to test if two consecutive skips ends the game
+     *
+     * @author Brynn Harrington
+     */
+    public void testSkips() {
 
     }
 

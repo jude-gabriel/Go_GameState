@@ -70,9 +70,9 @@ public class MainActivity extends AppCompatActivity{
 
 
                             //Display on the screen
-                            theText.append((CharSequence) firstInstance.toString());
-                            theText.append((CharSequence) secondInstance.toString());
-                            theText.append((CharSequence) thirdInstance.toString());
+                            theText.append(firstInstance.toString());
+                            theText.append(secondInstance.toString());
+                            theText.append(thirdInstance.toString());
 
                             //Update the counter for the next test
                             counter++;
@@ -83,33 +83,40 @@ public class MainActivity extends AppCompatActivity{
 
                             //Place a black stone to complete a capture
                             boolean works = firstInstance.playerMove(2, 2);
-                            works = firstInstance.playerMove(7,7);
+                            works = firstInstance.playerMove(7, 7);
 
                             //Display on the screen
-                            theText.append((CharSequence) firstInstance.toString());
-                            theText.append((CharSequence) secondInstance.toString());
-                            theText.append((CharSequence) thirdInstance.toString());
+                            theText.append(firstInstance.toString());
+                            theText.append(secondInstance.toString());
+                            theText.append(thirdInstance.toString());
 
-
+                            //Increment the counter
                             counter++;
                             break;
 
                         //MAKE MOVES
                         case 3:
+                            //Increment the counter
                             counter++;
                             break;
 
                         //MAKE MOVES
                         case 4:
                             //Update the text for each instance
-                            theText.append((CharSequence) firstInstance.toString());
-                            theText.append((CharSequence) secondInstance.toString());
-                            theText.append((CharSequence) thirdInstance.toString());
+                            theText.append(firstInstance.toString());
+                            theText.append(secondInstance.toString());
+                            theText.append(thirdInstance.toString());
+
+                            //Increment the counter
                             counter++;
                             break;
+
                         //Test forfeiting
                         case 5:
+                            //Attempt to forfeit on the first instance
                             firstInstance.testForfeit();
+
+                            //Increment the counter
                             counter++;
                             break;
                     }
