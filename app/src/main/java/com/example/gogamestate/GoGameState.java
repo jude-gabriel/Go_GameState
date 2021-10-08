@@ -641,7 +641,7 @@ public class GoGameState {
         if (gameOver) return timerString + " " + playerTurn + " " + firstPlayerScore + " " +
                 secondPlayerScore + theBoard + " \nGAME OVER";
 
-        //If game isn't over, display invormation
+        //If game isn't over, display information
         for (int i = 0; i < boardSize; i++) {
             theBoard.append("\n");
             for (int j = 0; j < boardSize; j++) {

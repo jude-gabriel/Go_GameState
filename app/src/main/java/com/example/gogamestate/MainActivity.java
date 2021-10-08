@@ -128,7 +128,8 @@ public class MainActivity extends AppCompatActivity{
                         //Test skipping twice
                         case 6:
                             //Attempt to skip twice
-                            firstInstance.testSkips();
+                            firstInstance.skipTurn();
+                            firstInstance.skipTurn();
 
                             //Increment the counter and break
                             counter++;
@@ -147,7 +148,7 @@ public class MainActivity extends AppCompatActivity{
             }
         });
     }
-} 
+}
 
 
 //Make a test for the capture
