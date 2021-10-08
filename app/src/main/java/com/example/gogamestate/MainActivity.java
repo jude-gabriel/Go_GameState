@@ -128,10 +128,12 @@ public class MainActivity extends AppCompatActivity{
                         //Test skipping twice
                         case 6:
                             //Attempt to skip twice
-                            firstInstance.playerMove(5,5);
                             firstInstance.skipTurn();
-                            firstInstance.playerMove(5,6);
                             firstInstance.skipTurn();
+                            theText.append(firstInstance.toString());
+                            theText.append(secondInstance.toString());
+                            theText.append(thirdInstance.toString());
+
 
                             //Increment the counter and break
                             counter++;
