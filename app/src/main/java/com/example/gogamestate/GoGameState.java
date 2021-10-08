@@ -392,8 +392,6 @@ public class GoGameState {
      * @modified Brynn Harrington
      */
     public void checkCapture(int i, int j, Stone.StoneColor checkCol, Stone.StoneColor capCol) {
-        //TODO: determine if this can be replaced with isValidLocation method
-
         //Verify the location is valid, the stone has not been checked. and the stone color
         //is not what is being checked
         if (i < 0 || j < 0
@@ -421,8 +419,6 @@ public class GoGameState {
      * This method finds which stones can be captured and captures them
      *
      * @author Jude Gabriel
-     *
-     * TODO: Did it pass testing?
      */
     public void commenceCapture(Stone.StoneColor capCol){
         //Iterate through the board
@@ -444,8 +440,6 @@ public class GoGameState {
      * If captures are not possible, reset checked stone values
      *
      * @author Jude Gabriel
-     *
-     * TODO: Did it pass testing?
      */
     public void resetCapture(){
         //Iterate through the board and reset checked stone to false
@@ -564,6 +558,8 @@ public class GoGameState {
      *
      * @author Jude Gabriel
      * @author Brynn Harrington
+     *
+     * TODO: Did it pass testing?
      */
     public boolean skipTurn() {
         //Reset the current player to the opponent
@@ -587,12 +583,10 @@ public class GoGameState {
      *
      * @author Jude Gabriel
      *
-     * TODO: Testing - NEED TO VERIFY WORKS FOR HUMAN V. HUMAN
-     * TODO: likely need to exlude player 1 part
+     * TODO: Did it pass testing?
      */
     public boolean forfeit(){
-
-        //TODO: change back once verified testing correct
+        // set game over to true since forfeited
         gameOver = true;
         return true;
     }
@@ -671,7 +665,7 @@ public class GoGameState {
             }
         }
 
-        //Add to the
+        //Add to the total score
         for (int i = 0; i < boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {
                 //If empty liberties, add to current score
@@ -689,10 +683,7 @@ public class GoGameState {
     }
 
 
-    /*** HELPER METHODS FOR TESTING ***/
-    //TODO: ADD MORE TESTS FOR SMART AND DUMB AI
-
-    /**
+    /* HELPER METHODS FOR TESTING
      * testCaptures
      * Used to test if captures works
      *
