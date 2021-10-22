@@ -29,7 +29,7 @@ public class GoGameState {
     private int totalMoves;                 //Total number of moves made in game
     private int numSkips;                   //Tracks whether two consecutive skips
 
-    private Handicap handicap;          // tracks the current handicap
+    private final Handicap handicap;              //Tracks the current handicap
 
     /**
      * GoGameState
@@ -40,11 +40,11 @@ public class GoGameState {
      * @author Mia Anderson
      * @author Brynn Harrington
      */
-    public GoGameState(Handicap handicap) {
+    public GoGameState(Handicap h) {
         //Initialize the board size and gameBoard array
         boardSize = 9;
         gameBoard = new Stone[boardSize][boardSize];
-        gameBoard = initializeArray(handicap);
+        gameBoard = initializeArray();
 
         //Set isPlayer1 to true so that player 1 starts the game
         isPlayer1 = true;
@@ -65,6 +65,9 @@ public class GoGameState {
         //Initialize the arrays that store former board positions
         stoneCopiesFirst = new Stone[boardSize][boardSize];
         stoneCopiesSecond = new Stone[boardSize][boardSize];
+
+        //Set the handicap
+        handicap = h;
     }
 
     /**
@@ -92,6 +95,8 @@ public class GoGameState {
         this.numSkips = gs.numSkips;
         this.isPlayer1 = gs.isPlayer1;
         this.totalMoves = gs.totalMoves;
+        this.stoneCopiesFirst = deepCopyArray(gs.stoneCopiesFirst);
+        this.stoneCopiesFirst = deepCopyArray(gs.stoneCopiesSecond);
         this.handicap = gs.handicap;
     }
 
@@ -109,18 +114,46 @@ public class GoGameState {
         //Create a temporary array of stones
         Stone[][] tempBoard = new Stone[boardSize][boardSize];
 
-
         //Initialize the stones to a certain color
-        for(int i = 0; i < 9; i++) {
+        for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 tempBoard[i][j] = new Stone((j * 350) + 250, (i * 350) + 50);
             }
         }
 
+        //Iterate through the cases of handicap to determine if stones need to be placed
+        switch (handicap) {
+            //No handicap - return current board
+            case NONE:
+                break;
+            //One Stone - Place a black stone at 2x2
+            case ONE_STONE:
+                gameBoard[2][2].setStoneColor(Stone.StoneColor.BLACK);
+                break;
+            //Two Stones - Place blacks stones at 2x2 and 6x6
+            case TWO_STONES:
+                gameBoard[2][2].setStoneColor(Stone.StoneColor.BLACK);
+                gameBoard[6][6].setStoneColor(Stone.StoneColor.BLACK);
+                break;
+            //Three Stones - Place blacks stones at 2x2, 2x6, and 6x6
+            case THREE_STONES:
+                gameBoard[2][2].setStoneColor(Stone.StoneColor.BLACK);
+                gameBoard[2][6].setStoneColor(Stone.StoneColor.BLACK);
+                gameBoard[6][6].setStoneColor(Stone.StoneColor.BLACK);
+                break;
+            //Three Stones - Place blacks stones at 2x2, 2x6, 6x2, and 6x6
+            case FOUR_STONES:
+                gameBoard[2][2].setStoneColor(Stone.StoneColor.BLACK);
+                gameBoard[2][6].setStoneColor(Stone.StoneColor.BLACK);
+                gameBoard[6][2].setStoneColor(Stone.StoneColor.BLACK);
+                gameBoard[6][6].setStoneColor(Stone.StoneColor.BLACK);
+                break;
+            default:
+                break;
+        }
         //Return the array of stones
         return tempBoard;
     }
-
 
     /**
      * Handicap

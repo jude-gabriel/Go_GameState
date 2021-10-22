@@ -35,9 +35,9 @@ public class MainActivity extends AppCompatActivity{
 
 
         // initialize a new game state
-        firstInstance = new GoGameState();
+        firstInstance = new GoGameState(GoGameState.Handicap.ONE_STONE);
         secondInstance = new GoGameState(firstInstance);
-        thirdInstance = new GoGameState();
+        thirdInstance = new GoGameState(GoGameState.Handicap.ONE_STONE);
 
         // display the information test
         EditText theText = findViewById(R.id.infoText);
