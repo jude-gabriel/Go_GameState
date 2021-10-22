@@ -95,8 +95,10 @@ public class GoGameState {
         this.numSkips = gs.numSkips;
         this.isPlayer1 = gs.isPlayer1;
         this.totalMoves = gs.totalMoves;
+        this.stoneCopiesFirst = new Stone[boardSize][boardSize];
         this.stoneCopiesFirst = deepCopyArray(gs.stoneCopiesFirst);
-        this.stoneCopiesFirst = deepCopyArray(gs.stoneCopiesSecond);
+        this.stoneCopiesSecond = new Stone[boardSize][boardSize];
+        this.stoneCopiesSecond = deepCopyArray(gs.stoneCopiesSecond);
         this.p1Handicap = gs.p1Handicap;
         this.p2Handicap = gs.p2Handicap;
     }
@@ -671,6 +673,14 @@ public class GoGameState {
         return totalScore;
     }
 
+
+    /**
+     * setHandicap
+     * Checks if both users agree on a handicap and places player 1's handicap
+     * if so.
+     *
+     * @author Jude Gabriel
+     */
     public void setHandicap(){
         if((isPlayer1 == true) && (totalMoves) == 0){
             p1Handicap = true;
