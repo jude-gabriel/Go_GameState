@@ -29,6 +29,8 @@ public class GoGameState {
     private int totalMoves;                 //Total number of moves made in game
     private int numSkips;                   //Tracks whether two consecutive skips
 
+    private Handicap handicap;          // tracks the current handicap
+
     /**
      * GoGameState
      * Constructor for the GoGameStateClass
@@ -38,11 +40,11 @@ public class GoGameState {
      * @author Mia Anderson
      * @author Brynn Harrington
      */
-    public GoGameState() {
+    public GoGameState(Handicap handicap) {
         //Initialize the board size and gameBoard array
         boardSize = 9;
         gameBoard = new Stone[boardSize][boardSize];
-        gameBoard = initializeArray();
+        gameBoard = initializeArray(handicap);
 
         //Set isPlayer1 to true so that player 1 starts the game
         isPlayer1 = true;
@@ -64,7 +66,6 @@ public class GoGameState {
         stoneCopiesFirst = new Stone[boardSize][boardSize];
         stoneCopiesSecond = new Stone[boardSize][boardSize];
     }
-
 
     /**
      * GoGameState
@@ -91,29 +92,48 @@ public class GoGameState {
         this.numSkips = gs.numSkips;
         this.isPlayer1 = gs.isPlayer1;
         this.totalMoves = gs.totalMoves;
+        this.handicap = gs.handicap;
     }
 
-
-    /** initializeArray
+    /**
+     * initializeArray
      * This method initializes the array of stones
+     * and sets the handicap if necessary.
      *
      * @author Jude Gabriel
-     *
+     * @author Brynn Harrington
+     * <p>
      * NOTE: This method works as expected
      */
     public Stone[][] initializeArray() {
         //Create a temporary array of stones
         Stone[][] tempBoard = new Stone[boardSize][boardSize];
 
+
         //Initialize the stones to a certain color
-        for(int i = 0; i < 9; i++){
-            for(int j = 0; j < 9; j++){
-                tempBoard[i][j] = new Stone((j * 350) + 250,(i * 350) + 50);
+        for(int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                tempBoard[i][j] = new Stone((j * 350) + 250, (i * 350) + 50);
             }
         }
 
         //Return the array of stones
         return tempBoard;
+    }
+
+
+    /**
+     * Handicap
+     * This enum ranks the handicap passed into the constructor.
+     *
+     * @author Brynn Harrington
+     */
+    public enum Handicap {
+        NONE,
+        ONE_STONE,
+        TWO_STONES,
+        THREE_STONES,
+        FOUR_STONES
     }
 
 
