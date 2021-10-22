@@ -35,9 +35,9 @@ public class MainActivity extends AppCompatActivity{
 
 
         // initialize a new game state
-        firstInstance = new GoGameState(GoGameState.Handicap.ONE_STONE);
+        firstInstance = new GoGameState();
         secondInstance = new GoGameState(firstInstance);
-        thirdInstance = new GoGameState(GoGameState.Handicap.ONE_STONE);
+        thirdInstance = new GoGameState();
 
         // display the information test
         EditText theText = findViewById(R.id.infoText);
@@ -72,10 +72,24 @@ public class MainActivity extends AppCompatActivity{
                             counter++;
                             break;
 
+                        case 1:
+                            //Test a handicap at beginning of game
+                            theText.append("Handicap Phase: ");
+
+                            firstInstance.setHandicap();
+                            firstInstance.setHandicap();
+
+                            theText.append(firstInstance.toString());
+                            theText.append(secondInstance.toString());
+                            theText.append(thirdInstance.toString());
+                            counter++;
+                            break;
+
 
                         //Set up the capture
-                        case 1:
+                        case 2:
                             //Prepopulate the board to test a capture
+                            firstInstance.resetStones();
                             firstInstance.testCapture();
 
                             theText.append("Capture Phase: ");
@@ -91,7 +105,7 @@ public class MainActivity extends AppCompatActivity{
 
 
                         //Place a stone to complete the capture
-                        case 2:
+                        case 3:
                             //Place a black stone to complete a capture
                             boolean works = firstInstance.playerMove(2, 2);
                             works = firstInstance.playerMove(7, 7);
@@ -109,7 +123,7 @@ public class MainActivity extends AppCompatActivity{
 
 
                         //Set up the board and make the first capture for a repeated move
-                        case 3:
+                        case 4:
                             //Reset the board to all blank to initialize for repeated test
                             firstInstance.resetStones();
                             firstInstance.testRepeatedPosition();
@@ -130,7 +144,7 @@ public class MainActivity extends AppCompatActivity{
 
 
                         //Have white make a move such that the board will be repeated
-                        case 4:
+                        case 5:
                             //White makes the next move
                             firstInstance.playerMove(1, 1);
 
@@ -147,7 +161,7 @@ public class MainActivity extends AppCompatActivity{
 
 
                         //Test skipping twice
-                        case 5:
+                        case 6:
                             //Attempt to skip twice
                             firstInstance.skipTurn();
                             firstInstance.skipTurn();
@@ -165,7 +179,7 @@ public class MainActivity extends AppCompatActivity{
 
 
                         //Test forfeiting
-                        case 6:
+                        case 7:
                             //Attempt to forfeit on the first instance
                             firstInstance.testForfeit();
 
