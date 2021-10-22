@@ -11,8 +11,6 @@
 package com.example.gogamestate;
 
 
-import android.os.CountDownTimer;
-
 public class GoGameState {
 
     /* Private Instance Variables */
@@ -28,13 +26,9 @@ public class GoGameState {
     private Stone[][] stoneCopiesSecond;    //Stores the board from one move ago
     private int totalMoves;                 //Total number of moves made in game
     private int numSkips;                   //Tracks whether two consecutive skips
+    private boolean p1Handicap;             //Tracks if Player 1 agrees to handicap
+    private boolean p2Handicap;             //Tracks if Player 2 agrees to handicap
 
-
-    private boolean p1Handicap;
-    private boolean p2Handicap;
-
-
-    //private final Handicap handicap;              //Tracks the current handicap
 
     /**
      * GoGameState
@@ -71,8 +65,9 @@ public class GoGameState {
         stoneCopiesFirst = new Stone[boardSize][boardSize];
         stoneCopiesSecond = new Stone[boardSize][boardSize];
 
-        //Set the handicap
-        //handicap = h;
+        //Initialize handicap
+        p1Handicap = false;
+        p2Handicap = false;
     }
 
     /**
@@ -104,17 +99,14 @@ public class GoGameState {
         this.stoneCopiesFirst = deepCopyArray(gs.stoneCopiesSecond);
         this.p1Handicap = gs.p1Handicap;
         this.p2Handicap = gs.p2Handicap;
-        //this.handicap = gs.handicap;
     }
 
     /**
      * initializeArray
      * This method initializes the array of stones
-     * and sets the handicap if necessary.
      *
      * @author Jude Gabriel
-     * @author Brynn Harrington
-     * <p>
+     *
      * NOTE: This method works as expected
      */
     public Stone[][] initializeArray() {
@@ -128,53 +120,9 @@ public class GoGameState {
             }
         }
 
-//        //Iterate through the cases of handicap to determine if stones need to be placed
-//        switch (handicap) {
-//            //No handicap - return current board
-//            case NONE:
-//                break;
-//            //One Stone - Place a black stone at 2x2
-//            case ONE_STONE:
-//                gameBoard[2][2].setStoneColor(Stone.StoneColor.BLACK);
-//                break;
-//            //Two Stones - Place blacks stones at 2x2 and 6x6
-//            case TWO_STONES:
-//                gameBoard[2][2].setStoneColor(Stone.StoneColor.BLACK);
-//                gameBoard[6][6].setStoneColor(Stone.StoneColor.BLACK);
-//                break;
-//            //Three Stones - Place blacks stones at 2x2, 2x6, and 6x6
-//            case THREE_STONES:
-//                gameBoard[2][2].setStoneColor(Stone.StoneColor.BLACK);
-//                gameBoard[2][6].setStoneColor(Stone.StoneColor.BLACK);
-//                gameBoard[6][6].setStoneColor(Stone.StoneColor.BLACK);
-//                break;
-//            //Three Stones - Place blacks stones at 2x2, 2x6, 6x2, and 6x6
-//            case FOUR_STONES:
-//                gameBoard[2][2].setStoneColor(Stone.StoneColor.BLACK);
-//                gameBoard[2][6].setStoneColor(Stone.StoneColor.BLACK);
-//                gameBoard[6][2].setStoneColor(Stone.StoneColor.BLACK);
-//                gameBoard[6][6].setStoneColor(Stone.StoneColor.BLACK);
-//                break;
-//            default:
-//                break;
-//        }
         //Return the array of stones
         return tempBoard;
     }
-
-//    /**
-//     * Handicap
-//     * This enum ranks the handicap passed into the constructor.
-//     *
-//     * @author Brynn Harrington
-//     */
-//    public enum Handicap {
-//        NONE,
-//        ONE_STONE,
-//        TWO_STONES,
-//        THREE_STONES,
-//        FOUR_STONES
-//    }
 
 
     /** playerMove
