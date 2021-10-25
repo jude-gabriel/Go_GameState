@@ -673,6 +673,15 @@ public class GoGameState {
         return totalScore;
     }
 
+    /**
+     * isGameOver
+     * Returns whether the game is over or not.
+     *
+     * @return gameOver
+     */
+    public boolean isGameOver() {
+        return gameOver;
+    }
 
     /**
      * setHandicap
@@ -680,8 +689,9 @@ public class GoGameState {
      * if so.
      *
      * @author Jude Gabriel
+     * @author Brynn Harrington
      */
-    public void setHandicap(){
+    public void setHandicap() {
         if((isPlayer1 == true) && (totalMoves) == 0){
             p1Handicap = true;
             isPlayer1 = !isPlayer1;
@@ -768,6 +778,7 @@ public class GoGameState {
      * Used to reset the board in testing
      *
      * @author Jude Gabriel
+     *
      */
     public void resetStones(){
         for(int i = 0; i < boardSize; i++){
